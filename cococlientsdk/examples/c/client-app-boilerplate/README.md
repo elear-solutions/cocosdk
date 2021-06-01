@@ -31,7 +31,7 @@ $ ./<path to build folder>/bin/clientapp -d <current-working-directory>
 
 <current-working-directory> is the directory path where the application will store its data
 ```
-## How to make the initiate the connection to cocoNet
+## How to initiate the connection to cocoNet
 - Run the clientapp executable
 - Set the access token by choosing option number 5 
 - Get the available networkList by choosing option number 1
