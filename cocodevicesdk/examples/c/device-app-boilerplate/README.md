@@ -25,15 +25,15 @@ The built binary can be found inside <path to build folder>/bin
 ```
 
 ## Downloading device license file from Manage the Buzz portal
-1 Login to https://manage.dev.getcoco.buzz/home using the verified credential
-2 From the **Developer Dashboard** choose the **Devices** tile
-3 From **List of Products** page click on **Product** button for adding the new product (If the product is already created, go tp step 6)
-4 In the **Create Product** page fill the product information such as Product Name, Make, Model, Description, Setup Instructions and select **TYPE OF PRODUCT** as **Self Managed** then click on **SUBMIT**
-5 Once the above process is successfully completed page will be redirected to **List of Products** page and newly added product can be found from **List of Products**
-6 From **List of Products** page click on the product name
-7 From **Product Details** page click on **Device Licenses**
-8 Enter the number of Licenses as 1 for downloading one device liceses and click on **GENERATE**
-9 Download the license file
+1. Login to https://manage.dev.getcoco.buzz/home using the verified credential
+2. From the **Developer Dashboard** choose the **Devices** tile
+3. From **List of Products** page click on **Product** button for adding the new product (If the product is already created, go tp step 6)
+4. In the **Create Product** page fill the product information such as Product Name, Make, Model, Description, Setup Instructions and select **TYPE OF PRODUCT** as **Self Managed** then click on **SUBMIT**
+5. Once the above process is successfully completed page will be redirected to **List of Products** page and newly added product can be found from **List of Products**
+6. From **List of Products** page click on the product name
+7. From **Product Details** page click on **Device Licenses**
+8. Enter the number of Licenses as 1 for downloading one device liceses and click on **GENERATE**
+9. Download the license file
 
 ## Running the executable
 ```
