@@ -41,7 +41,7 @@ To run the built executable:
 $ ./<path to build folder>/bin/deviceapp -d <current-working-directory> -c <license-file-path>
 
 <current-working-directory> is the directory path where the application will store its data
-<config-file-path> is the path to the device license file downloaded from Manage the Buzz portal
+<license-file-path> is the path to the device license file downloaded from Manage the Buzz portal
 ```
 ## Adding the deviceApp into the cocoNet
 - Run the deviceApp executable by following the commands from ``Running the executable ``
