@@ -78,6 +78,10 @@ void coco_device_attribute_update_status(int32_t status, void *context);
  ***********************************************/
 void coco_device_data_corruption_cb();
 
+void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd);
+
+void get_brightness_values();
+
 /*************************************************************************************
  *                          EXTERNAL FUNCTIONS                                       *
  *************************************************************************************/

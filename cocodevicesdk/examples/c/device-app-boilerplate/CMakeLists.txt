@@ -26,7 +26,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 # Define the project name
-project(deviceapp) 
+project(deviceapp)
 
 if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   set(CONAN_DISABLE_CHECK_COMPILER true)
@@ -40,7 +40,7 @@ cmake_policy(SET CMP0015 NEW)
 # Set compilation flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic-errors -Wall -std=c11 -D_GNU_SOURCE -Os")
 
-# The following file GLOB command will search for all files within the current 
+# The following file GLOB command will search for all files within the current
 # directory that match the specified expressions (*.c and *.h), and assign the
 # resulting files to the variable SRCS. SRCS is a list of all C source and
 # header files in the current directory.
@@ -51,12 +51,14 @@ add_executable(deviceapp ${SRCS})
 
 # Specify the libraries to be linked dynamically
 if(${APPLE})
+  target_link_libraries(deviceapp libelearcommon_static.a)
   target_link_libraries(deviceapp libcocodevicesdk_static.a)
 else()
   if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     target_link_libraries(deviceapp catta)
   endif()
 
+  target_link_libraries(deviceapp elearcommon)
   target_link_libraries(deviceapp cocodevicesdk)
 endif()
 

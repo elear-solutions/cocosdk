@@ -31,10 +31,15 @@
 #include <unistd.h>
 #include <syslog.h>
 #include <time.h>
+#include <stdbool.h>
 #include "cocodevicesdk/coco_device_api.h"
 #include "cocostandard/coco_std_api.h"
 #include "cocostandard/coco_std_data_illuminance_types.h"
 #include "cocostandard/coco_std_data_network_config_types.h"
+#include "elearcommon/logger.h"
+#include "elearcommon/allocate.h"
+#include "cocostandard/coco_std_data_level_types.h"
+#include "elearcommon/ec_global_vars.h"
 #include "device_callback.h"
 
 /*************************************************************************************
@@ -56,43 +61,46 @@ typedef struct {
  ************************************************************************************/
 static void parse_cmdline_options(int argc, char *argv[]);
 static void device_init(char *cwd, char *configFilePath);
-static double get_next_lux_val(double currVal);
-static double get_next_rssi_val();
 
 /*************************************************************************************
  *                          GLOBAL VARIABLES                                         *
  *************************************************************************************/
+
 
 /*************************************************************************************
  *                          LOCAL VARIABLES                                          *
  *************************************************************************************/
 static cmdline_params_t appConfig = { NULL };
 
-static double luxVal = 198.56;
+static double luxVal = 100;
 static int32_t rssiVal = 4;
+static int maxVal = 100;
+static int val = 40;
+static int reportChange = 1;
 
 static coco_std_resource_attribute_info_t luxAttr = {
     NULL,
     0,
     "res-1",
-    COCO_STD_CAP_ILLUMINANCE_MEASUREMENT,
-    "illuminance",
-    COCO_STD_ATTR_CURRENT_LUMINANCE_LUX,
-    "lux",
-    "illuminance lux",
-    COCO_STD_DATA_TYPE_DOUBLE,
+    COCO_STD_CAP_LEVEL_CTRL,
+    "levelcontrol",
+    COCO_STD_ATTR_LEVEL_PCT,
+    "level",
+    "level control",
+    COCO_STD_DATA_TYPE_UINT8,
     0,
-    &luxVal,
-    &luxVal,
-    &luxVal,
-    &luxVal,
+    0,
+    &maxVal,
+    &val,
+    &val,
     0,
     10,
-    &luxVal,
+    &reportChange,
     1,
     0,
     0,
-    1556539804
+    1556539804,
+    0
 };
 
 static coco_std_resource_attribute_info_t rssiAttr = {
@@ -119,14 +127,14 @@ static coco_std_resource_attribute_info_t rssiAttr = {
     1556539804
 };
 
-static coco_std_resource_capability_t capArr[2] = {
+static coco_std_resource_capability_t capArr[] = {
   {
     {
       NULL,
       0,
       "res-1",
-      COCO_STD_CAP_ILLUMINANCE_MEASUREMENT,
-      "illuminance",
+      COCO_STD_CAP_LEVEL_CTRL,
+      "level control",
       0,
       NULL,
       0,
@@ -134,20 +142,6 @@ static coco_std_resource_capability_t capArr[2] = {
     },
     1,
     &luxAttr
-  }, {
-    {
-      NULL,
-      0,
-      "res-1",
-      COCO_STD_CAP_NETWORK_CONFIGURATION,
-      "NetworkConfiguration",
-      0,
-      NULL,
-      0,
-      0
-    },
-    1,
-    &rssiAttr
   }
 };
 
@@ -156,18 +150,21 @@ static coco_std_resource_t resourceInfo = {
     NULL,
     0,
     "res-1",
-    "Illuminance Sensor",
-    "Anchor",
+    "Brightness Control",
+    "laptop",
     "V1",
     "1.0.0",
-    "ILLUMINATION_SENSOR",
+    "LEVEL CONTROl",
     COCO_STD_POWER_SRC_BATTERY,
     COCO_STD_RCVR_TYPE_WHEN_STIMULATED,
     COCO_STD_STATUS_SUCCESS,
     0,
+    0,
+    NULL,
+    0,
     0
   },
-  2,
+  1,
   capArr
 };
 
@@ -184,11 +181,10 @@ Description : Parses the options passed on the command line and validates the
 *******************************************************************************/
 static void parse_cmdline_options(int argc, char *argv[]) {
   char opt;
-  bool printUsage = false;
   int i;
 
   opterr = 0;     // Suppress log messages from getopt()
-  
+
   // See the print_usage() macro definition for the meaning of each command-line option
   // being parsed below
   while ( (opt = getopt(argc, argv, "d:c:")) != -1) {
@@ -202,7 +198,7 @@ static void parse_cmdline_options(int argc, char *argv[]) {
         break;
 
       case '?':
-        printf("App: Warning: Ignoring unknown cmd-line option '-%c'\n", optopt);
+        ec_debug_log(LOG_DEBUG, "App: Warning: Ignoring unknown cmd-line option '-%c'", optopt);
         break;
     }
   }
@@ -211,29 +207,22 @@ static void parse_cmdline_options(int argc, char *argv[]) {
   // user know they are being ignored
   if (optind < argc) {
     for (i = optind; i < argc; i++) {
-      printf("App: Warning: Ignoring unknown cmd-line arg '%s'\n", argv[i]);
+      ec_debug_log(LOG_DEBUG, "App: Warning: Ignoring unknown cmd-line arg '%s'", argv[i]);
     }
   }
 
   // Print out command-line arguments parsed
   // If one or more arguments are missing, print out usage information
   if (NULL != appConfig.cwd) {
-    printf("App: Got working directory = %s\n", appConfig.cwd);
+    ec_debug_log(LOG_DEBUG, "App: Got working directory = %s", appConfig.cwd);
   } else {
-    printf("App: Error: No cmd-line option for working directory found\n");
-    printUsage = true;
+    ec_debug_log(LOG_ERR, "App: Error: No cmd-line option for working directory found", NULL);
   }
 
   if (NULL != appConfig.configFilePath) {
-    printf("App: Got config file path = %s\n", appConfig.configFilePath);
+    ec_debug_log(LOG_DEBUG, "App: Got config file path = %s", appConfig.configFilePath);
   } else {
-    printf("App: Error: No cmd-line option for config file path found\n");
-    printUsage = true;
-  }
-
-  if (printUsage) {
-    print_usage();
-    exit(1);
+    ec_debug_log(LOG_DEBUG, "App: Error: No cmd-line option for config file path found", NULL);
   }
 
   return;
@@ -248,8 +237,13 @@ Description : Initialize device SDK and onboard device to COCO Network
 *******************************************************************************/
 static void device_init(char *cwd, char *configFilePath) {
   int retVal;
-
+  ec_global_vars_init();
+  ec_debug_logger_init("deviceApp");
+  ec_debug_logger_config("7");
+  ec_allocate_init();
   coco_device_init_params_t deviceInitParams = { 0 };
+  deviceInitParams.loggerOutput = 1;
+  deviceInitParams.resInfoPath = "/home/gangeya/Desktop/resJson1.txt";
   deviceInitParams.cwdPath = cwd;
   deviceInitParams.configFilePath = configFilePath;
   deviceInitParams.downloadPath = cwd;
@@ -258,68 +252,24 @@ static void device_init(char *cwd, char *configFilePath) {
   deviceInitParams.attributeUpdateCb = coco_device_attribute_update_status;
   deviceInitParams.dataCorruptionCb = coco_device_data_corruption_cb;
   deviceInitParams.firmwareVersion = "1.0.0";
-  deviceInitParams.isExtendable = true;
-  deviceInitParams.powerSource = COCO_STD_POWER_SRC_BATTERY;
+  deviceInitParams.isExtendable = false;
+  deviceInitParams.powerSource = COCO_STD_POWER_SRC_MAINS_SINGLE_PHASE;
   deviceInitParams.receiverType = COCO_STD_RCVR_TYPE_RX_ON_WHEN_IDLE;
   deviceInitParams.skipSSLVerification = 1;
-
+  deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
-    printf("App: coco_device_init failed\n");
+    ec_debug_log(LOG_DEBUG, "App: coco_device_init failed", NULL);
     exit(1);
   }
-  
   // Keep calling COCO backend every 3 seconds
   if (0 == retVal) {
-    printf("App: Device is not provisioned yet\n");
+    ec_debug_log(LOG_DEBUG, "App: Device is not provisioned yet", NULL);
     while (-1 == (coco_device_init_auth())) {
-      printf("App: Will re-try init auth after 3 seconds\n");
+      ec_debug_log(LOG_DEBUG, "App: Will re-try init auth after 3 seconds", NULL);
       sleep(3);
     }
+
   }
-}
-
-/******************************************************************************
-Name        : get_next_lux_val
-Input(s)    : currVal: current lux value
-Output(s)   : double: next lux value
-Description : Randomly generate next lux value based upon current lux value
-*******************************************************************************/
-static double get_next_lux_val(double currVal) {
-  double nextVal = 0.0;
-  int whole, decimal, sign;
-
-  // Generated signed number to be added to the current attribute value
-  sign = rand() % 2;
-  whole = (rand() % 3) + 1;
-  decimal = (rand() % 100);
-  if ((0 == sign && currVal >= 253) || currVal >= 498) {
-    sign = -1;
-  }
-  else {
-    sign = 1;
-  }
-
-  // Add number generated above to the current attribute value to get the new attribute value
-  nextVal = currVal + (sign * ((double)whole + ((double)decimal/100)));
-  printf("App: next lux val: %lf\n", nextVal);
-
-  return nextVal;
-}
-
-/******************************************************************************
-Name        : get_next_rssi_val
-Input(s)    : None
-Output(s)   : double: next rssi value
-Description : Randomly generate next rssi value
-*******************************************************************************/
-static double get_next_rssi_val() {
-  int nextVal;
-
-  // Generated random number
-  nextVal = (rand() % 4) + 1;
-  printf("App: next rssi val: %d\n", nextVal);
-  
-  return nextVal;
 }
 
 /******************************************************************************
@@ -333,22 +283,14 @@ int main(int argc, char *argv[]) {
   // Extract working directory and config file path from command line arguments
   // These will be passed to COCO device SDK during init
   parse_cmdline_options(argc, argv);
-
   // This utility will initialize COCO device SDK
   device_init(appConfig.cwd, appConfig.configFilePath);
-
-  // Add a resource using COCO device SDK API
-  if (-1 == coco_device_add_resource(&resourceInfo, 1, 0, 0, NULL)) {
-    printf("App: Add resource failed\n");
-    exit(1);
-  }
+  get_brightness_values();
 
   // Run a loop to update the attribute value of the added resource every 2 seconds
   while(1) {
-    printf("App: Update attribute\n");
-    
-    // Set next lux attribute value
-    *(double *)(luxAttr.currentValue) = get_next_lux_val(*(double *)(luxAttr.currentValue));
+  // Set next lux attribute value
+   // *(double *)(luxAttr.currentValue) = get_next_lux_val(*(double *)(luxAttr.currentValue));
 
     // Update the lux attribute value of the added resource using COCO device SDK API
     if (-1 == coco_device_resource_attribute_update(&luxAttr, NULL)) {
@@ -357,15 +299,14 @@ int main(int argc, char *argv[]) {
     }
 
     // Set next rssi attribute value
-    *(int32_t *)(rssiAttr.currentValue) = get_next_rssi_val();
+    //*(int32_t *)(rssiAttr.currentValue) = get_next_rssi_val();
 
     // Update the lux attribute value of the added resource using COCO device SDK API
     if (-1 == coco_device_resource_attribute_update(&rssiAttr, NULL)) {
       printf("App: Update attribute failed\n");
       break;
     }
-    
-    sleep(2);
+
   }
 
   sleep(10);
