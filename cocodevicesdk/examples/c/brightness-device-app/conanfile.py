@@ -49,7 +49,7 @@ class DeviceAppConan(ConanFile):
         if self.user and self.channel:
             default_user = self.user
             default_channel = self.channel
-        self.requires("cocodevicesdk/[~0.65.0]@%s/%s" % (default_user, default_channel))
+        self.requires("cocodevicesdk/[0.76.12]@%s/%s" % (default_user, default_channel))
     
     def imports(self):
         if not tools.is_apple_os(self.settings.os):
