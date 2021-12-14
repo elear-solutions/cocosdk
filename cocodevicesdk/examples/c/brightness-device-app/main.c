@@ -36,6 +36,7 @@
 #include "cocostandard/coco_std_data_illuminance_types.h"
 #include "cocostandard/coco_std_data_network_config_types.h"
 #include "device_callback.h"
+#include "cocostandard/coco_std_data_meter_types.h"
 
 /*************************************************************************************
  *                          LOCAL MACROS                                             *
@@ -66,34 +67,59 @@ static void device_init(void);
  *                          LOCAL VARIABLES                                          *
  *************************************************************************************/
 static cmdline_params_t appConfig = { NULL };
-//
-//static int32_t rssiVal = 4;
-//static int reportChange = 1;
-//
-//static coco_std_resource_attribute_info_t rssiAttr = {
-//    NULL,
-//    0,
-//    "zigbee/0015BC0036000397/26",
-//    COCO_STD_CAP_NETWORK_CONFIGURATION,
-//    "NETWORK CONFIG",
-//    COCO_STD_ATTR_NW_CONFIG_RSSI,
-//    "RSSI",
-//    "rssi",
-//    COCO_STD_DATA_TYPE_UINT8,
-//    0,
-//    NULL,
-//    NULL,
-//    NULL,
-//    &rssiVal,
-//    0,
-//    0,
-//    &reportChange,
-//    1,
-//    0,
-//    0,
-//    1556539804,
-//    0
-//};
+
+static int32_t rssiVal = 4;
+static int reportChange = 1;
+
+static coco_std_resource_attribute_info_t rssiAttr = {
+    NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_NETWORK_CONFIGURATION,
+    "NETWORK CONFIG",
+    COCO_STD_ATTR_NW_CONFIG_RSSI,
+    "RSSI",
+    "rssi",
+    COCO_STD_DATA_TYPE_UINT8,
+    0,
+    NULL,
+    NULL,
+    NULL,
+    &rssiVal,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
+
+coco_std_resource_attribute_info_t demandAttr = {
+  NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_ENERGY_METERING,
+    "ENERGYMETERING",
+    COCO_STD_ATTR_METER_DEMAND_WATT,
+    "COCO_STD_ATTR_METER_DEMAND_WATT",
+    "COCO_STD_ATTR_METER_DEMAND_WATT",
+    COCO_STD_DATA_TYPE_DOUBLE,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
 
 /*************************************************************************************
  *                          PRIVATE FUNCTIONS                                        *
@@ -196,7 +222,7 @@ static void device_init(void) {
   deviceInitParams.dataCorruptionCb = coco_device_data_corruption_cb;
   deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
   deviceInitParams.skipSSLVerification = 1;
-
+  deviceInitParams.firmwareVersion = "1.0.0";
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
     printf("App: coco_device_init failed\n");
     exit(1);
@@ -210,10 +236,10 @@ static void device_init(void) {
       sleep(3);
     }
   }
-//  //Updating rssi value
-//  if (-1 == coco_device_resource_attribute_update(&rssiAttr, NULL)) {
-//    printf("App: Update attribute failed\n");
-//  }
+  //Updating rssi value
+  if (-1 == coco_device_resource_attribute_update(&rssiAttr, NULL)) {
+    printf("App: Update attribute failed\n");
+  }
 }
 
 /******************************************************************************
@@ -224,6 +250,7 @@ Description : Initialise cocodevicesdk, add the device to COCONet, add a resourc
               and publish attribute update once every 2 seconds
 *******************************************************************************/
 int main(int argc, char *argv[]) {
+  double val;
   // Extract working directory and config file path from command line arguments
   // These will be passed to COCO device SDK during init
   parse_cmdline_options(argc, argv);
@@ -233,6 +260,11 @@ int main(int argc, char *argv[]) {
 
   // Run a loop  every 5 seconds
   while(1) {
+    val = (rand() % 50) + 1;
+    demandAttr.currentValue = &val;
+    if (-1 == coco_device_resource_attribute_update(&demandAttr, NULL)) {
+          printf("App: Update attribute failed\n");
+  }
     sleep(5);
   }
   return EXIT_SUCCESS;
