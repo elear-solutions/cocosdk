@@ -264,3 +264,13 @@ void update_consumption_and_demand(double currentValue) {
           printf("App: Update attribute failed\n");
   }
 }
+
+/*************************************************************************************
+ * Refer to the header file for a detailed description                               *
+ *************************************************************************************/
+void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
+   printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
+          fwUpdateDetails.version, fwUpdateDetails.filePath);
+   return;
+}
+

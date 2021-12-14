@@ -84,6 +84,8 @@ void map_brightness_values();
 
 void update_consumption_and_demand();
 
+void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails);
+
 /*************************************************************************************
  *                          EXTERNAL FUNCTIONS                                       *
  *************************************************************************************/

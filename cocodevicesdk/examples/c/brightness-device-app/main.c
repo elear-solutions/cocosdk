@@ -42,6 +42,10 @@
  *************************************************************************************/
 #define print_usage() \
   printf("App: Usage: %s -d current-working-directory -c config-file-path\n", argv[0])
+#define FIRMWARE_VERSION_PATH             "./firmwareversion"
+#define CMD_GET_MAJOR_VERSION             "cat " FIRMWARE_VERSION_PATH " | grep -a majorVersion | cut -f2 -d="
+#define CMD_GET_MINOR_VERSION             "cat " FIRMWARE_VERSION_PATH " | grep -a minorVersion | cut -f2 -d="
+#define CMD_GET_PATCH_VERSION             "cat " FIRMWARE_VERSION_PATH " | grep -a patchVersion | cut -f2 -d="
 
 /*************************************************************************************
  *                          LOCAL TYPEDEFS                                           *
@@ -175,6 +179,111 @@ static void parse_cmdline_options(int argc, char *argv[]) {
 }
 
 /******************************************************************************
+Name        : get_parameter
+Input(s)    : cmd: command name string
+Output(s)   : char *: Pointer to the parameter string which is extracted form the command output
+Description : This function executes the given command in a pipe and writes the output into a string
+*******************************************************************************/
+static char *get_parameter(char *cmd) {
+  FILE *fp;
+  char *param = NULL;
+  size_t paramLen = 0;
+  int index;
+
+  //popen executes a command in the shell and creates a pipe to it
+  if (NULL != (fp = popen(cmd, "r"))) {
+    //reading the data from shell
+    if (-1 == getline(&param, &paramLen, fp)) {
+      printf("App: getline: failed to read parameter from, %s\n", cmd);
+
+      if (NULL != param) {
+        printf("App: freeing param arg\n ");
+        free(param);
+      }
+
+      if (-1 == pclose(fp)) {
+        printf("App: pclose failure with the given command,");
+        exit(1);
+      }
+
+      return NULL;
+    }
+
+    // strip space, carriage return, line feed from end of data received form getline
+    index = strlen(param) - 1;
+
+    while (' '  == param[index] || '\r' == param[index] || '\n' == param[index]) {
+      param[index] = '\0';
+      index--;
+    }
+
+    if (-1 == pclose(fp)) {
+      printf(LOG_ALERT, "App: pclose failure with the given command\n");
+      exit(1);
+    }
+
+    return param;
+  }
+
+  return NULL;
+}
+
+/******************************************************************************
+Name        : get_firmware_version
+Input(s)    :
+Output(s)   :
+Description :
+*******************************************************************************/
+static char *get_firmware_version(void) {
+  ec_debug_log(LOG_DEBUG, "Started", NULL);
+  char *firmwareVersion;
+  char *majorVersion, *minorVersion, *patchVersion;
+  size_t length = 0;
+  char *versionQuery[1024] = {0};
+
+  if ( 0 != access(FIRMWARE_VERSION_PATH, F_OK | R_OK) ) {
+    printf("App: Firmware version file not found or not having read permissions at %s\n",
+           FIRMWARE_VERSION_PATH);
+    exit(1);
+  }
+
+  if (NULL == (majorVersion = get_parameter(CMD_GET_MAJOR_VERSION))) {
+    printf("App: Unable to extract Major version\n");
+    exit(1);
+  }
+
+  if (NULL == (minorVersion = get_parameter(CMD_GET_MINOR_VERSION))) {
+    printf("App: Unable to extract Minor version\n");
+    exit(1);
+  }
+
+  if (NULL == (patchVersion = get_parameter(CMD_GET_PATCH_VERSION))) {
+    printf("App: Unable to extract patch version\n");
+    exit(1);
+  }
+
+  // firmwareVersion = majorVersion.minorVersion.patchVersion
+  length = strlen(majorVersion) + 1 + strlen(minorVersion) + 1 + strlen(patchVersion) + 1;
+
+  if (NULL == (firmwareVersion = calloc(1, length))) {
+    printf("App: Unable to allocate memory\n");
+    exit(1);
+  }
+
+  if (snprintf(firmwareVersion, length, "%s.%s.%s", majorVersion, minorVersion, patchVersion) < 0) {
+    printf("App: Unable to create string\n",);
+    exit(1);
+  }
+
+  free(majorVersion);
+  free(minorVersion);
+  free(patchVersion);
+
+  ec_debug_log(LOG_DEBUG, "Done", NULL);
+  return firmwareVersion;
+}
+
+/******************************************************************************
 Name        : device_init
 Input(s)    : cwd           : current working directory for device SDK
               configFilePath: path to device license file
@@ -190,11 +299,13 @@ static void device_init(void) {
   deviceInitParams.cwdPath = appConfig.cwd;
   deviceInitParams.configFilePath = appConfig.configFilePath;
   deviceInitParams.downloadPath = appConfig.cwd;
+  deviceInitParams.firmwareVersion = get_firmware_version;
   deviceInitParams.coconetConnStatusCb = coco_device_join_nw_status_cb;
   deviceInitParams.addResStatusCb = coco_device_add_res_status_cb;
   deviceInitParams.attributeUpdateCb = coco_device_attribute_update_status;
   deviceInitParams.dataCorruptionCb = coco_device_data_corruption_cb;
   deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
+  deviceInitParams.firmwareUpdateCb = coco_device_firmware_update_cb;
   deviceInitParams.skipSSLVerification = 1;
 
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
