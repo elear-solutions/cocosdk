@@ -190,9 +190,9 @@ static void parse_cmdline_options(int argc, char *argv[]) {
   }
 
   if (NULL != appConfig.resInfoPath) {
-    printf("App: Got config file path = %s\n", appConfig.resInfoPath);
+    printf("App: Got resource info file path = %s\n", appConfig.resInfoPath);
   } else {
-    printf("App: Error: No cmd-line option for config file path found\n");
+    printf("App: Error: No cmd-line option for resource info file path found\n");
     printUsage = true;
   }
 
@@ -264,7 +264,6 @@ static char *get_firmware_version(void) {
   char *firmwareVersion;
   char *majorVersion, *minorVersion, *patchVersion;
   size_t length = 0;
-  char *versionQuery[1024] = {0};
 
   if ( 0 != access(FIRMWARE_VERSION_PATH, F_OK | R_OK) ) {
     printf("App: Firmware version file not found or not having read permissions at %s\n",
@@ -318,7 +317,7 @@ static void device_init(void) {
   int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
 
   coco_device_init_params_t deviceInitParams = { 0 };
-  deviceInitParams.loggerOutput = 1;
+  deviceInitParams.loggerOutput = 0;
   deviceInitParams.resInfoPath = appConfig.resInfoPath;//"/home/gangeya/Desktop/resJson1.txt";
   deviceInitParams.cwdPath = appConfig.cwd;
   deviceInitParams.configFilePath = appConfig.configFilePath;
@@ -361,6 +360,7 @@ Description : Initialise cocodevicesdk, add the device to COCONet, add a resourc
 *******************************************************************************/
 int main(int argc, char *argv[]) {
   double val;
+  printf("App: Starting....\n");
   // Extract working directory and config file path from command line arguments
   // These will be passed to COCO device SDK during init
   parse_cmdline_options(argc, argv);
@@ -372,9 +372,10 @@ int main(int argc, char *argv[]) {
   while(1) {
     val = (rand() % 50) + 1;
     demandAttr.currentValue = &val;
+    printf("App: Sending Energy Demand Attribute Update with value: %.2f\n", val);
     if (-1 == coco_device_resource_attribute_update(&demandAttr, NULL)) {
-          printf("App: Update attribute failed\n");
-  }
+      printf("App: Energy Demand Attribute Update  failed\n");
+    }
     sleep(5);
   }
   return EXIT_SUCCESS;

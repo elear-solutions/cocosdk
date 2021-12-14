@@ -35,14 +35,14 @@
 /*************************************************************************************
  *                          LOCAL MACROS                                             *
  *************************************************************************************/
+#define FIRMWARE_VERSION_PATH             "./firmwareversion"
 
-/*************************************************************************************
- *                          LOCAL TYPEDEFS                                           *
- *************************************************************************************/
 #define MAX_BRIGHTNESS_FILE_PATH    "/sys/class/backlight/intel_backlight/max_brightness"
 
 #define BRIGHTNESS_FILE_PATH        "/sys/class/backlight/intel_backlight/brightness"
-
+/*************************************************************************************
+ *                          LOCAL TYPEDEFS                                           *
+ *************************************************************************************/
 /*************************************************************************************
  *                          LOCAL PROTOTYPES                                         *
  *************************************************************************************/
@@ -164,16 +164,16 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
 
   if (COCO_STD_CAP_LEVEL_CTRL == resourceCmd->capabilityId &&
       COCO_STD_CMD_SET_LEVEL_WITH_ON_OFF == resourceCmd->cmdId) {
-        if (NULL == resCmd) {
-          printf("App: CmdParams not passed\n");
-          return;
-        }
+    if (NULL == resCmd) {
+      printf("App: CmdParams not passed\n");
+      return;
+    }
 
         if (resCmd->levelPct > 100 || resCmd->levelPct < 0) {
           printf("error: invalid value for levelPct, %d\n", resCmd->levelPct);
           return;
         }
-
+        printf("App: Received LevelControl command with level %d....Setting Brightness....\n", resCmd->levelPct);
         level = resCmd->levelPct * (maxBrightness/100);
 
         if (-1 == (fd = open(BRIGHTNESS_FILE_PATH, O_RDWR))) {
@@ -191,7 +191,7 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
         }
 
         levelAttr.currentValue = (void *)&resCmd->levelPct;
-
+        printf("App: Sending Level Attribute Update with level: %d\n", resCmd->levelPct);
         if (-1 == coco_device_resource_attribute_update(&levelAttr, NULL)) {
           printf("App: Update attribute failed\n");
         }
@@ -204,7 +204,19 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
  * Refer to the header file for a detailed description                               *
  *************************************************************************************/
 void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
-   printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
+  char command[200] = {0};
+  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
           fwUpdateDetails->version, fwUpdateDetails->filePath);
-   return;
+  if (snprintf(command, sizeof(command), "%s %s %s", "mv", fwUpdateDetails->filePath, FIRMWARE_VERSION_PATH) < 0) {
+    printf("App: Unable to create firmwarepath\n");
+  } else {
+    if (-1 == system(command)) {
+      printf("App: Unable to upadte firmware\n");
+      exit(1);
+    }
+    sleep(5);
+    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
+    exit(1);
+  }
+  return;
 }
