@@ -56,6 +56,9 @@ else()
   target_link_libraries(deviceapp cocodevicesdk)
 endif()
 
+target_link_libraries(deviceapp dl)
+target_link_libraries(deviceapp pthread)
+target_link_libraries(deviceapp m)
 
 # ------------------------- Begin Generic CMake Variable Logging ------------------
 
