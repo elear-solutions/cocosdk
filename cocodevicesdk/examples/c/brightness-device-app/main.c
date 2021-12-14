@@ -244,7 +244,7 @@ static char *get_parameter(char *cmd) {
     }
 
     if (-1 == pclose(fp)) {
-      printf(LOG_ALERT, "App: pclose failure with the given command\n");
+      printf("App: pclose failure with the given command\n");
       exit(1);
     }
 
@@ -261,7 +261,6 @@ Output(s)   :
 Description :
 *******************************************************************************/
 static char *get_firmware_version(void) {
-  ec_debug_log(LOG_DEBUG, "Started", NULL);
   char *firmwareVersion;
   char *majorVersion, *minorVersion, *patchVersion;
   size_t length = 0;
@@ -297,15 +296,13 @@ static char *get_firmware_version(void) {
   }
 
   if (snprintf(firmwareVersion, length, "%s.%s.%s", majorVersion, minorVersion, patchVersion) < 0) {
-    printf("App: Unable to create string\n",);
+    printf("App: Unable to create string\n");
     exit(1);
   }
 
   free(majorVersion);
   free(minorVersion);
   free(patchVersion);
-
-  ec_debug_log(LOG_DEBUG, "Done", NULL);
   return firmwareVersion;
 }
 
@@ -325,7 +322,7 @@ static void device_init(void) {
   deviceInitParams.cwdPath = appConfig.cwd;
   deviceInitParams.configFilePath = appConfig.configFilePath;
   deviceInitParams.downloadPath = appConfig.cwd;
-  deviceInitParams.firmwareVersion = get_firmware_version;
+  deviceInitParams.firmwareVersion = get_firmware_version();
   deviceInitParams.coconetConnStatusCb = coco_device_join_nw_status_cb;
   deviceInitParams.addResStatusCb = coco_device_add_res_status_cb;
   deviceInitParams.attributeUpdateCb = coco_device_attribute_update_status;

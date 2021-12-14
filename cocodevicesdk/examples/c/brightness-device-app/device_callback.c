@@ -205,6 +205,6 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
  *************************************************************************************/
 void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
    printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
-          fwUpdateDetails.version, fwUpdateDetails.filePath);
+          fwUpdateDetails->version, fwUpdateDetails->filePath);
    return;
 }
