@@ -49,13 +49,14 @@
 typedef struct {
   char *cwd;
   char *configFilePath;
+  char *resInfoPath;
 } cmdline_params_t;
 
 /*************************************************************************************
  *                          LOCAL PROTOTYPES                                         *
  ************************************************************************************/
 static void parse_cmdline_options(int argc, char *argv[]);
-static void device_init(char *cwd, char *configFilePath);
+static void device_init(void);
 
 /*************************************************************************************
  *                          GLOBAL VARIABLES                                         *
@@ -65,34 +66,34 @@ static void device_init(char *cwd, char *configFilePath);
  *                          LOCAL VARIABLES                                          *
  *************************************************************************************/
 static cmdline_params_t appConfig = { NULL };
-
-static int32_t rssiVal = 4;
-static int reportChange = 1;
-
-static coco_std_resource_attribute_info_t rssiAttr = {
-    NULL,
-    0,
-    "zigbee/0015BC0036000397/26",
-    COCO_STD_CAP_NETWORK_CONFIGURATION,
-    "NETWORK CONFIG",
-    COCO_STD_ATTR_NW_CONFIG_RSSI,
-    "RSSI",
-    "rssi",
-    COCO_STD_DATA_TYPE_UINT8,
-    0,
-    NULL,
-    NULL,
-    NULL,
-    &rssiVal,
-    0,
-    0,
-    &reportChange,
-    1,
-    0,
-    0,
-    1556539804,
-    0
-};
+//
+//static int32_t rssiVal = 4;
+//static int reportChange = 1;
+//
+//static coco_std_resource_attribute_info_t rssiAttr = {
+//    NULL,
+//    0,
+//    "zigbee/0015BC0036000397/26",
+//    COCO_STD_CAP_NETWORK_CONFIGURATION,
+//    "NETWORK CONFIG",
+//    COCO_STD_ATTR_NW_CONFIG_RSSI,
+//    "RSSI",
+//    "rssi",
+//    COCO_STD_DATA_TYPE_UINT8,
+//    0,
+//    NULL,
+//    NULL,
+//    NULL,
+//    &rssiVal,
+//    0,
+//    0,
+//    &reportChange,
+//    1,
+//    0,
+//    0,
+//    1556539804,
+//    0
+//};
 
 /*************************************************************************************
  *                          PRIVATE FUNCTIONS                                        *
@@ -111,10 +112,10 @@ static void parse_cmdline_options(int argc, char *argv[]) {
   int i;
 
   opterr = 0;     // Suppress log messages from getopt()
-  
+
   // See the print_usage() macro definition for the meaning of each command-line option
   // being parsed below
-  while ( (opt = getopt(argc, argv, "d:c:")) != -1) {
+  while ( (opt = getopt(argc, argv, "d:c:r:")) != -1) {
     switch (opt) {
       case 'd':
         appConfig.cwd = optarg;
@@ -122,6 +123,10 @@ static void parse_cmdline_options(int argc, char *argv[]) {
 
       case 'c':
         appConfig.configFilePath = optarg;
+        break;
+
+      case 'r':
+        appConfig.resInfoPath = optarg;
         break;
 
       case '?':
@@ -154,6 +159,13 @@ static void parse_cmdline_options(int argc, char *argv[]) {
     printUsage = true;
   }
 
+  if (NULL != appConfig.resInfoPath) {
+    printf("App: Got config file path = %s\n", appConfig.resInfoPath);
+  } else {
+    printf("App: Error: No cmd-line option for config file path found\n");
+    printUsage = true;
+  }
+
   if (printUsage) {
     print_usage();
     exit(1);
@@ -169,30 +181,27 @@ Input(s)    : cwd           : current working directory for device SDK
 Output(s)   : void
 Description : Initialize device SDK and onboard device to COCO Network
 *******************************************************************************/
-static void device_init(char *cwd, char *configFilePath) {
+static void device_init(void) {
   int retVal;
 
   coco_device_init_params_t deviceInitParams = { 0 };
   deviceInitParams.loggerOutput = 1;
-  deviceInitParams.resInfoPath = "/home/gangeya/Desktop/resJson1.txt";
-  deviceInitParams.cwdPath = cwd;
-  deviceInitParams.configFilePath = configFilePath;
-  deviceInitParams.downloadPath = cwd;
+  deviceInitParams.resInfoPath = appConfig.resInfoPath;//"/home/gangeya/Desktop/resJson1.txt";
+  deviceInitParams.cwdPath = appConfig.cwd;
+  deviceInitParams.configFilePath = appConfig.configFilePath;
+  deviceInitParams.downloadPath = appConfig.cwd;
   deviceInitParams.coconetConnStatusCb = coco_device_join_nw_status_cb;
   deviceInitParams.addResStatusCb = coco_device_add_res_status_cb;
   deviceInitParams.attributeUpdateCb = coco_device_attribute_update_status;
   deviceInitParams.dataCorruptionCb = coco_device_data_corruption_cb;
-  deviceInitParams.firmwareVersion = "1.0.0";
-  deviceInitParams.isExtendable = false;
-  deviceInitParams.powerSource = COCO_STD_POWER_SRC_MAINS_SINGLE_PHASE;
-  deviceInitParams.receiverType = COCO_STD_RCVR_TYPE_RX_ON_WHEN_IDLE;
-  deviceInitParams.skipSSLVerification = 1;
   deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
+  deviceInitParams.skipSSLVerification = 1;
+
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
     printf("App: coco_device_init failed\n");
     exit(1);
   }
-  
+
   // Keep calling COCO backend every 3 seconds
   if (0 == retVal) {
     printf("App: Device is not provisioned yet\n");
@@ -200,8 +209,11 @@ static void device_init(char *cwd, char *configFilePath) {
       printf("App: Will re-try init auth after 3 seconds\n");
       sleep(3);
     }
-
   }
+//  //Updating rssi value
+//  if (-1 == coco_device_resource_attribute_update(&rssiAttr, NULL)) {
+//    printf("App: Update attribute failed\n");
+//  }
 }
 
 /******************************************************************************
@@ -217,16 +229,10 @@ int main(int argc, char *argv[]) {
   parse_cmdline_options(argc, argv);
 
   // This utility will initialize COCO device SDK
-  device_init(appConfig.cwd, appConfig.configFilePath);
-  map_brightness_values();
+  device_init();
 
-  if (-1 == coco_device_resource_attribute_update(&rssiAttr, NULL)) {
-      printf("App: Update attribute failed\n");
-  }
-
-  // Run a loop to update the attribute value of the added resource every 5 seconds
+  // Run a loop  every 5 seconds
   while(1) {
-    //update_consumption_and_demand();
     sleep(5);
   }
   return EXIT_SUCCESS;

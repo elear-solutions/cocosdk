@@ -25,6 +25,8 @@
 /*===================================================================================*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "cocodevicesdk/coco_device_api.h"
 #include "cocostandard/coco_std_data_level_types.h"
 #include "cocostandard/coco_std_data_meter_types.h"
@@ -37,6 +39,9 @@
 /*************************************************************************************
  *                          LOCAL TYPEDEFS                                           *
  *************************************************************************************/
+#define MAX_BRIGHTNESS_FILE_PATH    "/sys/class/backlight/intel_backlight/max_brightness"
+
+#define BRIGHTNESS_FILE_PATH        "/sys/class/backlight/intel_backlight/brightness"
 
 /*************************************************************************************
  *                          LOCAL PROTOTYPES                                         *
@@ -45,14 +50,14 @@
 /*************************************************************************************
  *                          GLOBAL VARIABLES                                         *
  *************************************************************************************/
- int64_t maxBrightness;
-static int maxVal = 100;
-static int64_t curVal = 50;
-static int reportChange = 1;
-
 /*************************************************************************************
  *                          LOCAL VARIABLES                                          *
  *************************************************************************************/
+static int maxVal = 100;
+static int64_t curVal = 50;
+static int reportChange = 1;
+static int64_t maxBrightness = 0;
+
 static coco_std_resource_attribute_info_t levelAttr = {
     NULL,
     0,
@@ -102,6 +107,7 @@ NULL,
     1556539804,
     0
 };
+
 coco_std_resource_attribute_info_t demand = {
   NULL,
     0,
@@ -130,6 +136,33 @@ coco_std_resource_attribute_info_t demand = {
 /*************************************************************************************
  *                          PRIVATE FUNCTIONS                                        *
  *************************************************************************************/
+/******************************************************************************
+Name        : get_max_brightness_value
+Input(s)    : cwd           : current working directory for device SDK
+              configFilePath: path to device license file
+Output(s)   : void
+Description : Initialize device SDK and onboard device to COCO Network
+*******************************************************************************/
+static void get_max_brightness_value() {
+  int fd = 0;
+  char maxBrightStr[10] = {0};
+  if (-1 == (fd = open(MAX_BRIGHTNESS_FILE_PATH, O_RDONLY))) {
+    printf("Unable to open the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
+    return;
+  }
+  if (-1 == (read(fd, maxBrightStr, 10))) {
+    printf("unable to read the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
+    close(fd);
+    return;
+  }
+
+  close(fd);
+
+  if (false == (maxBrightness = atoi(maxBrightStr))) {
+    printf("Unable to convert the Brightnessvalue into integer\n");
+    return;
+  }
+}
 
 /*************************************************************************************
  *                          PUBLIC FUNCTIONS                                         *
@@ -165,66 +198,45 @@ void coco_device_data_corruption_cb() {
   printf("App: cocodevicesdk data corrupted\n");
   exit(1);
 }
-/*************************************************************************************
- * Refer to the header file for a detailed description                               *
- *************************************************************************************/
-void map_brightness_values() {
-  ec_debug_log(LOG_AUTHPRIV, "get", NULL);
-  int fd;
-  char maxBrightStr[10];
-  if (-1 == (fd = open("/sys/class/backlight/intel_backlight/max_brightness", O_RDONLY))) {
-    ec_debug_log(LOG_ERR, "Unable to open the file", NULL);
-    return;
-  }
-  if (-1 == (read(fd, maxBrightStr, 10))) {
-    ec_debug_log(LOG_ERR, "unable to read the file", NULL);
-    close(fd);
-    return;
-  }
-
-  close(fd);
-
-  if (false == ec_str_to_int(maxBrightStr, &maxBrightness)) {
-    ec_debug_log(LOG_ERR, "Unable to convert the string", NULL);
-    return;
-  }
-}
 
 /*************************************************************************************
  * Refer to the header file for a detailed description                               *
  *************************************************************************************/
 void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
   coco_std_cmd_set_level_t *resCmd = (coco_std_cmd_set_level_t *)resourceCmd->cmdParams;
-  int fd, setLevel, len;
-  char *setLevelStr;
+  int fd, level;
+  char levelStr[10] = {0};
+
+  if (0 == maxBrightness) {
+    printf("Fetching MaxBrightness of the system\n");
+    get_max_brightness_value();
+  }
+
   if (COCO_STD_CAP_LEVEL_CTRL == resourceCmd->capabilityId &&
       COCO_STD_CMD_SET_LEVEL_WITH_ON_OFF == resourceCmd->cmdId) {
         if (NULL == resCmd) {
-          printf("CmdParams not passed");
+          printf("CmdParams not passed\n");
           return;
         }
 
         if (resCmd->levelPct > 100 || resCmd->levelPct < 0) {
-          printf("error: invalid value for levelPct, %d", resCmd->levelPct);
+          printf("error: invalid value for levelPct, %d\n", resCmd->levelPct);
           return;
         }
 
-        setLevel = resCmd->levelPct * (maxBrightness/100);
+        level = resCmd->levelPct * (maxBrightness/100);
 
-        if (-1 == (fd = open("/sys/class/backlight/intel_backlight/brightness", O_RDWR))) {
-          printf("Unable to open the file");
-          return;
-        }
-        len = ec_strlen_int(setLevel);
-        setLevelStr = ec_allocate_and_set(len, EC_TTL_INFINITY, 0);
-
-        if (NULL == (setLevelStr = ec_int_to_str(setLevel, setLevelStr, len))) {
-          printf("Unable to convert");
+        if (-1 == (fd = open(BRIGHTNESS_FILE_PATH, O_RDWR))) {
+          printf("Unable to open the file : %s\n", BRIGHTNESS_FILE_PATH);
           return;
         }
 
-        if (-1 == write(fd, setLevelStr, strlen(setLevelStr))) {
-          printf("Unable to write");
+        if (snprintf(levelStr, sizeof(levelStr), "%d", level) < 0) {
+          printf("Unable to write integer into buffer\n");
+        }
+
+        if (-1 == write(fd, levelStr, sizeof(levelStr))) {
+          printf("Unable to write Level into file : %s\n", BRIGHTNESS_FILE_PATH);
           close(fd);
         }
 
@@ -234,14 +246,12 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
           printf("App: Update attribute failed\n");
         }
         update_consumption_and_demand((double)resCmd->levelPct);
-        ec_deallocate(setLevelStr);
         close(fd);
       }
       return;
 }
 
 void update_consumption_and_demand(double currentValue) {
-printf("HIIIIIIIIII");
   double val = 50 + (currentValue/2.0);
   consumption.currentValue = (void *)&val;
   if (-1 == coco_device_resource_attribute_update(&consumption, NULL)) {
