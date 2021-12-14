@@ -315,6 +315,7 @@ Description : Initialize device SDK and onboard device to COCO Network
 *******************************************************************************/
 static void device_init(void) {
   int retVal;
+  int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
 
   coco_device_init_params_t deviceInitParams = { 0 };
   deviceInitParams.loggerOutput = 1;
@@ -330,7 +331,8 @@ static void device_init(void) {
   deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
   deviceInitParams.firmwareUpdateCb = coco_device_firmware_update_cb;
   deviceInitParams.skipSSLVerification = 1;
-  deviceInitParams.firmwareVersion = "1.0.0";
+  deviceInitParams.protocolIdArr = protocolArr;
+  deviceInitParams.protocolIdArrCnt = 1;
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
     printf("App: coco_device_init failed\n");
     exit(1);

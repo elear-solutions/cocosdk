@@ -97,11 +97,11 @@ static void get_max_brightness_value() {
   int fd = 0;
   char maxBrightStr[10] = {0};
   if (-1 == (fd = open(MAX_BRIGHTNESS_FILE_PATH, O_RDONLY))) {
-    printf("Unable to open the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
+    printf("App: Unable to open the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
     return;
   }
   if (-1 == (read(fd, maxBrightStr, 10))) {
-    printf("unable to read the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
+    printf("App: Unable to read the file : %s\n", MAX_BRIGHTNESS_FILE_PATH);
     close(fd);
     return;
   }
@@ -109,7 +109,7 @@ static void get_max_brightness_value() {
   close(fd);
 
   if (false == (maxBrightness = atoi(maxBrightStr))) {
-    printf("Unable to convert the Brightnessvalue into integer\n");
+    printf("App: Unable to convert the Brightnessvalue into integer\n");
     return;
   }
 }
@@ -158,14 +158,14 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
   char levelStr[10] = {0};
 
   if (0 == maxBrightness) {
-    printf("Fetching MaxBrightness of the system\n");
+    printf("App: Fetching MaxBrightness of the system\n");
     get_max_brightness_value();
   }
 
   if (COCO_STD_CAP_LEVEL_CTRL == resourceCmd->capabilityId &&
       COCO_STD_CMD_SET_LEVEL_WITH_ON_OFF == resourceCmd->cmdId) {
         if (NULL == resCmd) {
-          printf("CmdParams not passed\n");
+          printf("App: CmdParams not passed\n");
           return;
         }
 
@@ -177,16 +177,16 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
         level = resCmd->levelPct * (maxBrightness/100);
 
         if (-1 == (fd = open(BRIGHTNESS_FILE_PATH, O_RDWR))) {
-          printf("Unable to open the file : %s\n", BRIGHTNESS_FILE_PATH);
+          printf("App: Unable to open the file : %s\n", BRIGHTNESS_FILE_PATH);
           return;
         }
 
         if (snprintf(levelStr, sizeof(levelStr), "%d", level) < 0) {
-          printf("Unable to write integer into buffer\n");
+          printf("App: Unable to write integer into buffer\n");
         }
 
         if (-1 == write(fd, levelStr, sizeof(levelStr))) {
-          printf("Unable to write Level into file : %s\n", BRIGHTNESS_FILE_PATH);
+          printf("App: Unable to write Level into file : %s\n", BRIGHTNESS_FILE_PATH);
           close(fd);
         }
 
