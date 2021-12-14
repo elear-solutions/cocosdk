@@ -80,7 +80,9 @@ void coco_device_data_corruption_cb();
 
 void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd);
 
-void get_brightness_values();
+void map_brightness_values();
+
+void update_consumption_and_demand();
 
 /*************************************************************************************
  *                          EXTERNAL FUNCTIONS                                       *

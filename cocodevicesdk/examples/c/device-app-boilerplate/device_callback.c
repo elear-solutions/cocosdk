@@ -33,6 +33,8 @@
 #include "elearcommon/allocate.h"
 #include "cocodevicesdk/coco_device_api.h"
 #include "cocostandard/coco_std_data_level_types.h"
+#include "cocostandard/coco_std_data_meter_types.h"
+#include "device_callback.h"
 
 /*************************************************************************************
  *                          LOCAL MACROS                                             *
@@ -49,11 +51,87 @@
 /*************************************************************************************
  *                          GLOBAL VARIABLES                                         *
  *************************************************************************************/
-static int64_t maxBrightness;
-static int change;
+ int64_t maxBrightness;
+static int maxVal = 100;
+static int64_t curVal = 50;
+static int reportChange = 1;
+
 /*************************************************************************************
  *                          LOCAL VARIABLES                                          *
  *************************************************************************************/
+static coco_std_resource_attribute_info_t levelAttr = {
+    NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_LEVEL_CTRL,
+    "LEVEL",
+    COCO_STD_ATTR_LEVEL_PCT,
+    "COCO_STD_ATTR_LEVEL_PCT",
+    "level control",
+    COCO_STD_DATA_TYPE_UINT8,
+    0,
+    0,
+    &maxVal,
+    NULL,
+    (void *)&curVal,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
+
+coco_std_resource_attribute_info_t consumption = {
+NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_ENERGY_METERING,
+    "ENERGYMETERINGCONSUMPTION",
+    COCO_STD_ATTR_METER_CONSUMPTION_KWH,
+    "COCO_STD_ATTR_METER_CONSUMPTION_KWH",
+    "COCO_STD_ATTR_METER_CONSUMPTION_KWH",
+    COCO_STD_DATA_TYPE_DOUBLE,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
+coco_std_resource_attribute_info_t demand = {
+  NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_ENERGY_METERING,
+    "ENERGYMETERING",
+    COCO_STD_ATTR_METER_DEMAND_WATT,
+    "COCO_STD_ATTR_METER_DEMAND_WATT",
+    "COCO_STD_ATTR_METER_DEMAND_WATT",
+    COCO_STD_DATA_TYPE_DOUBLE,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
 
 /*************************************************************************************
  *                          PRIVATE FUNCTIONS                                        *
@@ -96,7 +174,7 @@ void coco_device_data_corruption_cb() {
 /*************************************************************************************
  * Refer to the header file for a detailed description                               *
  *************************************************************************************/
-void get_brightness_values() {
+void map_brightness_values() {
   ec_debug_log(LOG_AUTHPRIV, "get", NULL);
   int fd;
   char maxBrightStr[10];
@@ -116,12 +194,6 @@ void get_brightness_values() {
     ec_debug_log(LOG_ERR, "Unable to convert the string", NULL);
     return;
   }
-
-  if (maxBrightness == 100) {
-    change = 1;
-  } else if (1< (maxBrightness/100)){
-    change = maxBrightness/100;
-  }
 }
 
 /*************************************************************************************
@@ -134,40 +206,57 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
   if (COCO_STD_CAP_LEVEL_CTRL == resourceCmd->capabilityId &&
       COCO_STD_CMD_SET_LEVEL_WITH_ON_OFF == resourceCmd->cmdId) {
         if (NULL == resCmd) {
-          ec_debug_log(LOG_ERR, "CmdParams not passed", NULL);
+          printf("CmdParams not passed");
           return;
         }
 
         if (resCmd->levelPct > 100 || resCmd->levelPct < 0) {
-          ec_debug_log(LOG_ERR, "error: invalid value for levelPct, %d", resCmd->levelPct);
+          printf("error: invalid value for levelPct, %d", resCmd->levelPct);
           return;
         }
 
-        if (change > 1) {
-          setLevel = resCmd->levelPct * change;
-        } else {
-          setLevel = resCmd->levelPct;
-        }
+        setLevel = resCmd->levelPct * (maxBrightness/100);
 
         if (-1 == (fd = open("/sys/class/backlight/intel_backlight/brightness", O_RDWR))) {
-          ec_debug_log(LOG_INFO, "Unable to open the file", NULL);
+          printf("Unable to open the file");
           return;
         }
         len = ec_strlen_int(setLevel);
         setLevelStr = ec_allocate_and_set(len, EC_TTL_INFINITY, 0);
 
         if (NULL == (setLevelStr = ec_int_to_str(setLevel, setLevelStr, len))) {
-          ec_debug_log(LOG_INFO, "Unable to convert", NULL);
+          printf("Unable to convert");
           return;
         }
 
         if (-1 == write(fd, setLevelStr, strlen(setLevelStr))) {
-          ec_debug_log(LOG_INFO, "Unable to write", NULL);
+          printf("Unable to write");
           close(fd);
         }
 
+        levelAttr.currentValue = (void *)&resCmd->levelPct;
+
+        if (-1 == coco_device_resource_attribute_update(&levelAttr, NULL)) {
+          printf("App: Update attribute failed\n");
+        }
+        update_consumption_and_demand((double)resCmd->levelPct);
         ec_deallocate(setLevelStr);
         close(fd);
       }
       return;
+}
+
+void update_consumption_and_demand(double currentValue) {
+printf("HIIIIIIIIII");
+  double val = 50 + (currentValue/2.0);
+  consumption.currentValue = (void *)&val;
+  if (-1 == coco_device_resource_attribute_update(&consumption, NULL)) {
+          printf("App: Update attribute failed\n");
+  }
+  val = (currentValue/2.0);
+  demand.currentValue = (void *)&val;
+
+  if (-1 == coco_device_resource_attribute_update(&demand, NULL)) {
+          printf("App: Update attribute failed\n");
+  }
 }
