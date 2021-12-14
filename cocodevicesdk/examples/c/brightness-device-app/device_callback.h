@@ -47,30 +47,6 @@
  *                          PUBLIC FUNCTIONS                                         *
  *************************************************************************************/
 /********************************************//**
- * @brief
- * @details
- * @param
- * @return
- ***********************************************/
-void coco_device_join_nw_status_cb(int32_t status);
-
-/********************************************//**
- * @brief
- * @details
- * @param
- * @return
- ***********************************************/
-void coco_device_add_res_status_cb(int32_t status, void *context);
-
-/********************************************//**
- * @brief
- * @details
- * @param
- * @return
- ***********************************************/
-void coco_device_attribute_update_status(int32_t status, void *context);
-
-/********************************************//**
  * @brief   Called when data maintained by cocodevicesdk gets corrupted
  * @details Nothing to be done in the app layer in this case
  * @param   None
@@ -79,7 +55,8 @@ void coco_device_attribute_update_status(int32_t status, void *context);
 void coco_device_data_corruption_cb();
 
 void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd);
-
+void coco_device_attribute_update_status(int32_t status, void *context);
+void coco_device_add_res_status_cb(int32_t status, void *context);
 void map_brightness_values();
 
 void update_consumption_and_demand();
