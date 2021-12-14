@@ -83,56 +83,6 @@ static coco_std_resource_attribute_info_t levelAttr = {
     0
 };
 
-coco_std_resource_attribute_info_t consumption = {
-NULL,
-    0,
-    "zigbee/0015BC0036000397/26",
-    COCO_STD_CAP_ENERGY_METERING,
-    "ENERGYMETERINGCONSUMPTION",
-    COCO_STD_ATTR_METER_CONSUMPTION_KWH,
-    "COCO_STD_ATTR_METER_CONSUMPTION_KWH",
-    "COCO_STD_ATTR_METER_CONSUMPTION_KWH",
-    COCO_STD_DATA_TYPE_DOUBLE,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    &reportChange,
-    1,
-    0,
-    0,
-    1556539804,
-    0
-};
-
-coco_std_resource_attribute_info_t demand = {
-  NULL,
-    0,
-    "zigbee/0015BC0036000397/26",
-    COCO_STD_CAP_ENERGY_METERING,
-    "ENERGYMETERING",
-    COCO_STD_ATTR_METER_DEMAND_WATT,
-    "COCO_STD_ATTR_METER_DEMAND_WATT",
-    "COCO_STD_ATTR_METER_DEMAND_WATT",
-    COCO_STD_DATA_TYPE_DOUBLE,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    &reportChange,
-    1,
-    0,
-    0,
-    1556539804,
-    0
-};
-
 /*************************************************************************************
  *                          PRIVATE FUNCTIONS                                        *
  *************************************************************************************/
@@ -245,24 +195,9 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
         if (-1 == coco_device_resource_attribute_update(&levelAttr, NULL)) {
           printf("App: Update attribute failed\n");
         }
-        update_consumption_and_demand((double)resCmd->levelPct);
         close(fd);
       }
       return;
-}
-
-void update_consumption_and_demand(double currentValue) {
-  double val = 50 + (currentValue/2.0);
-  consumption.currentValue = (void *)&val;
-  if (-1 == coco_device_resource_attribute_update(&consumption, NULL)) {
-          printf("App: Update attribute failed\n");
-  }
-  val = (currentValue/2.0);
-  demand.currentValue = (void *)&val;
-
-  if (-1 == coco_device_resource_attribute_update(&demand, NULL)) {
-          printf("App: Update attribute failed\n");
-  }
 }
 
 /*************************************************************************************
@@ -273,4 +208,3 @@ void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDet
           fwUpdateDetails.version, fwUpdateDetails.filePath);
    return;
 }
-
