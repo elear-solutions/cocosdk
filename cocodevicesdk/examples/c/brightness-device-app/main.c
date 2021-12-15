@@ -10,11 +10,20 @@
 #include "cocostandard/coco_std_data_network_config_types.h"
 #include "cocostandard/coco_std_data_meter_types.h"
 #include "cocostandard/coco_std_data_level_types.h"
+void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails);
+void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd);
+void coco_device_attribute_update_status(int32_t status, void *context);
 /* Local Variables */
 static int maxVal = 100;
 static int64_t curVal = 50;
 static int32_t rssiVal = 4;
 static int reportChange = 1;
+static int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
+char dataPath[20] = {"../../data"};
+char configPath[20] = {"../../config.txt"};
+char resourceInfoPath[] = {"../../resourceTemplate.txt"};
+char downloadPath[] = {"./"};
+char firmwareVersion[] = {"1.0.1"};
 static coco_std_resource_attribute_info_t levelAttr = {
     NULL,
     0,
@@ -90,13 +99,68 @@ coco_std_resource_attribute_info_t demandAttr = {
     0
 };
 
-static coco_device_init_params_t deviceInitParams = { 0 };
-static int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
-char dataPath[20] = {"../data"};
-char configPath[20] = {"../config.txt"};
-char resourceInfoPath[] = {"../resourceTemplate.txt"};
-char downloadPath[] = {"./"};
-char firmwareVersion[] = {"1.0.1"};
+static coco_device_init_params_t deviceInitParams = {
+  dataPath,
+  0,
+  0,
+  configPath,
+  downloadPath,
+  0,
+  firmwareVersion,
+  protocolArr,
+  1,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,//loggeroutput
+  resourceInfoPath,
+  coco_device_resource_cmd_cb,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  coco_device_attribute_update_status,
+  0,
+  coco_device_firmware_update_cb,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+};
 
 void coco_device_data_corruption_cb() {
   printf("App: cocodevicesdk data corrupted\n");
@@ -126,20 +190,20 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
 }
 
 void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
-  char command[200] = {0};
-  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
-          fwUpdateDetails->version, fwUpdateDetails->filePath);
-  if (snprintf(command, sizeof(command), "%s %s %s", "mv", fwUpdateDetails->filePath, FIRMWARE_VERSION_PATH) < 0) {
-    printf("App: Unable to create firmwarepath\n");
-  } else {
-    if (-1 == system(command)) {
-      printf("App: Unable to upadte firmware\n");
-      exit(1);
-    }
-    sleep(5);
-    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
-    exit(1);
-  }
+//  char command[200] = {0};
+//  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
+//          fwUpdateDetails->version, fwUpdateDetails->filePath);
+//  if (snprintf(command, sizeof(command), "%s %s %s", "mv", fwUpdateDetails->filePath, FIRMWARE_VERSION_PATH) < 0) {
+//    printf("App: Unable to create firmwarepath\n");
+//  } else {
+//    if (-1 == system(command)) {
+//      printf("App: Unable to upadte firmware\n");
+//      exit(1);
+//    }
+//    sleep(5);
+//    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
+//    exit(1);
+//  }
   return;
 }
 
@@ -147,19 +211,6 @@ int main(int argc, char *argv[]) {
   double val;
   int retVal;
 
-  deviceInitParams.loggerOutput = 1;
-  deviceInitParams.resInfoPath = resourceInfoPath;
-  deviceInitParams.cwdPath = dataPath;
-  deviceInitParams.configFilePath = configPath;
-  deviceInitParams.downloadPath = downloadPath;
-  deviceInitParams.firmwareVersion = firmwareVersion;
-  deviceInitParams.attributeUpdateCb = coco_device_attribute_update_status;
-  deviceInitParams.dataCorruptionCb = coco_device_data_corruption_cb;
-  deviceInitParams.resourceCmdCb = coco_device_resource_cmd_cb;
-  deviceInitParams.firmwareUpdateCb = coco_device_firmware_update_cb;
-  deviceInitParams.skipSSLVerification = 1;
-  deviceInitParams.protocolIdArr = protocolArr;
-  deviceInitParams.protocolIdArrCnt = 1;
   if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
     exit(1);
   } else if (0 == retVal) {
@@ -170,8 +221,9 @@ int main(int argc, char *argv[]) {
   }
   coco_device_resource_attribute_update(&rssiAttr, NULL);
   while (1) {
-    val = (rand() % 50) + 1;
+    val++;
     demandAttr.currentValue = &val;
+    coco_device_tx_user_log_msg("App: Sending Energy Demand Attribute Update with value: %.2f\n", val);
     coco_device_resource_attribute_update(&demandAttr, NULL);
     sleep(5);
   }
