@@ -219,6 +219,7 @@ int main(int argc, char *argv[]) {
   while (1) {
     val++;
     demandAttr.currentValue = &val;
+    printf("App: Sending Energy Demand Attribute Update with value: %.2f\n", val);
     coco_device_tx_user_log_msg("App: Sending Energy Demand Attribute Update with value: %.2f\n", val);
     coco_device_resource_attribute_update(&demandAttr, NULL);
     sleep(5);
