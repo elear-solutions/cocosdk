@@ -1,30 +1,3 @@
-/*===================================================================================*/
-/*************************************************************************************/
-/**
- * @file      main.c
- * @brief     Device app built on top of COCO Device SDK
- * @details   Device app to demonstatrate capabilities of COCO Device SDK like adding a
- *            resource and publishing attribute updates
- * @see
- * @author    Utkarsha Meshram, utkarshameshram@elear.solutions
- * @author    Varun Kumar, varun.k@healthasyst.com
- * @test
- * @copyright Copyright (c) 2021 Elear Solutions Tech Private Limited. All rights
- *            reserved.
- * @license   To any person (the "Recipient") obtaining a copy of this software and
- *            associated documentation files (the "Software"):\n
- *            All information contained in or disclosed by this software is
- *            confidential and proprietary information of Elear Solutions Tech
- *            Private Limited and all rights therein are expressly reserved.
- *            By accepting this material the recipient agrees that this material and
- *            the information contained therein is held in confidence and in trust
- *            and will NOT be used, copied, modified, merged, published, distributed,
- *            sublicensed, reproduced in whole or in part, nor its contents revealed
- *            in any manner to others without the express written permission of
- *            Elear Solutions Tech Private Limited.
- */
-/*************************************************************************************/
-/*===================================================================================*/
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -35,32 +8,37 @@
 #include "cocostandard/coco_std_api.h"
 #include "cocostandard/coco_std_data_illuminance_types.h"
 #include "cocostandard/coco_std_data_network_config_types.h"
-#include "device_callback.h"
 #include "cocostandard/coco_std_data_meter_types.h"
-
-/*************************************************************************************
- *                          LOCAL MACROS                                             *
- *************************************************************************************/
-char dataPath[20] = {"../data"};
-char configPath[20] = {"../config.txt"};
-char resourceInfoPath[] = {"../resourceTemplate.txt"};
-char downloadPath[] = {"./"};
-char firmwareVersion[] = {"1.0.1"};
-
-/*************************************************************************************
- *                          LOCAL TYPEDEFS                                           *
- *************************************************************************************/
-/*************************************************************************************
- *                          LOCAL PROTOTYPES                                         *
- ************************************************************************************/
-/*************************************************************************************
- *                          GLOBAL VARIABLES                                         *
- *************************************************************************************/
-/*************************************************************************************
- *                          LOCAL VARIABLES                                          *
- *************************************************************************************/
+#include "cocostandard/coco_std_data_level_types.h"
+/* Local Variables */
+static int maxVal = 100;
+static int64_t curVal = 50;
 static int32_t rssiVal = 4;
 static int reportChange = 1;
+static coco_std_resource_attribute_info_t levelAttr = {
+    NULL,
+    0,
+    "zigbee/0015BC0036000397/26",
+    COCO_STD_CAP_LEVEL_CTRL,
+    "LEVEL",
+    COCO_STD_ATTR_LEVEL_PCT,
+    "COCO_STD_ATTR_LEVEL_PCT",
+    "level control",
+    COCO_STD_DATA_TYPE_UINT8,
+    0,
+    0,
+    &maxVal,
+    NULL,
+    (void *)&curVal,
+    0,
+    0,
+    &reportChange,
+    1,
+    0,
+    0,
+    1556539804,
+    0
+};
 
 static coco_std_resource_attribute_info_t rssiAttr = {
     NULL,
@@ -112,23 +90,63 @@ coco_std_resource_attribute_info_t demandAttr = {
     0
 };
 
-/*************************************************************************************
- *                          PRIVATE FUNCTIONS                                        *
- *************************************************************************************/
-/******************************************************************************
-Name        : main
-Input(s)    : Command line arguments
-Output(s)   : int: exit status of the application
-Description : Initialise cocodevicesdk, add the device to COCONet, add a resource
-              and publish attribute update once every 2 seconds
-*******************************************************************************/
+static coco_device_init_params_t deviceInitParams = { 0 };
+static int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
+char dataPath[20] = {"../data"};
+char configPath[20] = {"../config.txt"};
+char resourceInfoPath[] = {"../resourceTemplate.txt"};
+char downloadPath[] = {"./"};
+char firmwareVersion[] = {"1.0.1"};
+
+void coco_device_data_corruption_cb() {
+  printf("App: cocodevicesdk data corrupted\n");
+  exit(1);
+}
+
+void coco_device_attribute_update_status(int32_t status, void *context) {
+  printf("App: coco_device_attribute_update_status() status: %d\n", status);
+  return;
+}
+
+void coco_device_add_res_status_cb(int32_t status, void *context) {
+  printf("App: coco_device_add_res_status_cb() status: %d\n", status);
+  return;
+}
+
+void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
+  coco_std_cmd_set_level_t *resCmd = (coco_std_cmd_set_level_t *)resourceCmd->cmdParams;
+
+  if (COCO_STD_CAP_LEVEL_CTRL == resourceCmd->capabilityId &&
+      COCO_STD_CMD_SET_LEVEL_WITH_ON_OFF == resourceCmd->cmdId) {
+    printf("App: Received LevelControl command with level %d....Setting Brightness....\n", resCmd->levelPct);
+    levelAttr.currentValue = (void *)&resCmd->levelPct;
+    coco_device_resource_attribute_update(&levelAttr, NULL);
+    }
+    return;
+}
+
+void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
+  char command[200] = {0};
+  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
+          fwUpdateDetails->version, fwUpdateDetails->filePath);
+  if (snprintf(command, sizeof(command), "%s %s %s", "mv", fwUpdateDetails->filePath, FIRMWARE_VERSION_PATH) < 0) {
+    printf("App: Unable to create firmwarepath\n");
+  } else {
+    if (-1 == system(command)) {
+      printf("App: Unable to upadte firmware\n");
+      exit(1);
+    }
+    sleep(5);
+    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
+    exit(1);
+  }
+  return;
+}
+
 int main(int argc, char *argv[]) {
   double val;
-  printf("HI");
-  int32_t protocolArr[] = {COCO_STD_PROTOCOL_ZIGBEE};
-   int retVal;
+  int retVal;
 
-  coco_device_init_params_t deviceInitParams = { 0 };
   deviceInitParams.loggerOutput = 1;
   deviceInitParams.resInfoPath = resourceInfoPath;
   deviceInitParams.cwdPath = dataPath;
@@ -150,9 +168,7 @@ int main(int argc, char *argv[]) {
       sleep(3);
     }
   }
-
   coco_device_resource_attribute_update(&rssiAttr, NULL);
-
   while (1) {
     val = (rand() % 50) + 1;
     demandAttr.currentValue = &val;
