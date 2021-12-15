@@ -116,7 +116,7 @@ static coco_device_init_params_t deviceInitParams = {
   0,
   0,
   0,
-  1,//loggeroutput
+  0,//loggeroutput
   "../../resourceTemplate.json",
   coco_device_resource_cmd_cb,
   0,
