@@ -53,10 +53,6 @@ add_executable(deviceapp ${SRCS})
 if(${APPLE})
   target_link_libraries(deviceapp libcocodevicesdk_static.a)
 else()
-  if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    target_link_libraries(deviceapp catta)
-  endif()
-
   target_link_libraries(deviceapp cocodevicesdk)
 endif()
 

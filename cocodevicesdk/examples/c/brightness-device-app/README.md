@@ -1,9 +1,10 @@
-# Boilerplate for building a device app on top of COCO Device SDK
+# Sample app for building a device app on top of COCO Device SDK
 
 It is a CLI application to act as boilerplate for building a device app using COCO Device SDK. It demonstrates the following:
-- Onboarding the device onto the COCO Network
-- Adding an illumination sensor as a resource to the device
-- Publishing attribute updates for the illumination sensor
+- Onboarding the device with resource template supporting LEVEL CONTROL, ENERGY METER and NEWTWORK CONFIGURATION capabilties onto the COCO Network.
+- Supports handling of Level control commands, OTA. Remote device diagnosis
+- Publishes energy demand attribute update every 5 secs.
+- Publishes level Percentage attribute on recieving level control command.
 
 ## Build on host machine
 ```
@@ -27,10 +28,7 @@ The built binary can be found inside <path to build folder>/bin
 ## Running the executable
 ```
 To run the built executable:
-$ ./<path to build folder>/bin/deviceapp -d <current-working-directory> -c <config-file-path>
-
-<current-working-directory> is the directory path where the application will store its data
-<onfig-file-path> is the path to the device license file downloaded from Manage the Buzz portal
+$ ./<path to build folder>/bin/deviceapp 
 ```
 
 License
