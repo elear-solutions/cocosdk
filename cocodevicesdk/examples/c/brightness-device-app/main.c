@@ -23,7 +23,7 @@ char dataPath[20] = {"../../data"};
 char configPath[20] = {"../../config.txt"};
 char resourceInfoPath[] = {"../../resourceTemplate.txt"};
 char downloadPath[] = {"./"};
-char firmwareVersion[] = {"1.0.1"};
+char firmwareVersion[] = {"1.0.0"};
 static coco_std_resource_attribute_info_t levelAttr = {
     NULL,
     0,
@@ -121,7 +121,7 @@ static coco_device_init_params_t deviceInitParams = {
   0,
   0,
   0,
-  1,//loggeroutput
+  0,//loggeroutput
   resourceInfoPath,
   coco_device_resource_cmd_cb,
   0,
@@ -162,18 +162,13 @@ static coco_device_init_params_t deviceInitParams = {
   0
 };
 
-void coco_device_data_corruption_cb() {
-  printf("App: cocodevicesdk data corrupted\n");
-  exit(1);
-}
-
 void coco_device_attribute_update_status(int32_t status, void *context) {
-  printf("App: coco_device_attribute_update_status() status: %d\n", status);
+  printf("App: attrbute update status: %d\n", status);
   return;
 }
 
 void coco_device_add_res_status_cb(int32_t status, void *context) {
-  printf("App: coco_device_add_res_status_cb() status: %d\n", status);
+  printf("App: resource addition status: %d\n", status);
   return;
 }
 
@@ -215,9 +210,10 @@ int main(int argc, char *argv[]) {
     exit(1);
   } else if (0 == retVal) {
     while (-1 == (coco_device_init_auth())) {
-      printf("Sending Auth\n");
+      printf("App: Sending device authentication request\n");
       sleep(3);
     }
+    printf("App: Device authentication success\n");
   }
   coco_device_resource_attribute_update(&rssiAttr, NULL);
   while (1) {
