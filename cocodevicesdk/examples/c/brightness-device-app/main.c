@@ -10,6 +10,9 @@
 #include "cocostandard/coco_std_data_network_config_types.h"
 #include "cocostandard/coco_std_data_meter_types.h"
 #include "cocostandard/coco_std_data_level_types.h"
+
+#define FILE_NAME "deviceapp"
+
 void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails);
 void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd);
 void coco_device_attribute_update_status(int32_t status, void *context);
@@ -24,6 +27,7 @@ char configPath[20] = {"../../config.txt"};
 char resourceInfoPath[] = {"../../resourceTemplate.txt"};
 char downloadPath[] = {"./"};
 char firmwareVersion[] = {"1.0.0"};
+
 static coco_std_resource_attribute_info_t levelAttr = {
     NULL,
     0,
@@ -185,37 +189,41 @@ void coco_device_resource_cmd_cb(coco_std_resource_cmd_t *resourceCmd) {
 }
 
 void coco_device_firmware_update_cb(coco_device_fw_update_details_t *fwUpdateDetails) {
-//  char command[200] = {0};
-//  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
-//          fwUpdateDetails->version, fwUpdateDetails->filePath);
-//  if (snprintf(command, sizeof(command), "%s %s %s", "mv", fwUpdateDetails->filePath, FIRMWARE_VERSION_PATH) < 0) {
-//    printf("App: Unable to create firmwarepath\n");
-//  } else {
-//    if (-1 == system(command)) {
-//      printf("App: Unable to upadte firmware\n");
-//      exit(1);
-//    }
-//    sleep(5);
-//    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
-//    exit(1);
-//  }
+  char command[200] = {0};
+  printf(" App: New firmware version:%s found!!, Downloaded at %s\n",
+          fwUpdateDetails->version, fwUpdateDetails->filePath);
+  if (snprintf(command, sizeof(command), "%s %s %s%s", "mv", fwUpdateDetails->filePath, downloadPath, FILE_NAME) < 0) {
+    printf("App: Unable to create firmwarepath\n");
+  } else {
+  if (0 == fork()) {
+    if (-1 == system(command)) {
+      printf("App: Unable to upadte firmware\n");
+      exit(1);
+    }
+    sleep(5);
+    printf("App: Installed firmware version %s....System Rebooting....\n", fwUpdateDetails->version);
+    exit(1);
+  } else {
+  sleep(20);
+  exit(1);
+  }
+  }
   return;
 }
 
 int main(int argc, char *argv[]) {
-  double val;
+  double val = 0;
   int retVal;
 
-  if (-1 == (retVal = coco_device_init(&deviceInitParams))) {
-    exit(1);
-  } else if (0 == retVal) {
+  if (0 == (retVal = coco_device_init(&deviceInitParams))) {
     while (-1 == (coco_device_init_auth())) {
-      printf("App: Sending device authentication request\n");
       sleep(3);
     }
     printf("App: Device authentication success\n");
   }
+
   coco_device_resource_attribute_update(&rssiAttr, NULL);
+
   while (1) {
     val++;
     demandAttr.currentValue = &val;
