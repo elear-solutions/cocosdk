@@ -37,6 +37,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of real time position attribute
 typedef enum {
   COCO_STD_ATTR_REAL_TIME_POSITION_MIN = -1,
   COCO_STD_ATTR_REAL_TIME_POSITION_BEACON_LOC,  // COCO_STD_DATA_TYPE_JSON_STRING
@@ -44,6 +45,7 @@ typedef enum {
   COCO_STD_ATTR_REAL_TIME_POSITION_UBOUND = 0x7FFF
 } coco_std_attr_real_time_position_t;
 
+// Structure of real time position beacon location attribute
 typedef struct {
   char *locationIdStr;
   char *lotIdStr;

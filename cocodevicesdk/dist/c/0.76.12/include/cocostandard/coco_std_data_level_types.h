@@ -43,6 +43,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of level command
 typedef enum {
   COCO_STD_CMD_LEVEL_MIN = -1,
   COCO_STD_CMD_SET_LEVEL,
@@ -52,6 +53,7 @@ typedef enum {
   COCO_STD_CMD_LEVEL_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_level_t;
 
+// Possible values of level attribute
 typedef enum {
   COCO_STD_ATTR_LEVEL_MIN = -1,
   COCO_STD_ATTR_LEVEL_PCT,      // COCO_STD_DATA_TYPE_UINT8
@@ -59,17 +61,24 @@ typedef enum {
   COCO_STD_ATTR_LEVEL_UBOUND = 0x7FFFFFFF
 } coco_std_attr_level_t;
 
+// Structure of set level command
 typedef struct {
-  uint8_t levelPct;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
+  uint8_t levelPct;                 // Level in percentage
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
 } coco_std_cmd_set_level_t;
 
+// Structure of set level with on off command
 typedef struct {
-  uint8_t levelPct;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
-  int32_t restoreLevelFlag;
+  uint8_t levelPct;                 // Level in percentage
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
+  int32_t restoreLevelFlag;         // Flag to indicate set the level as maximum or not.
+                                    // If it is true, it will set level at max, else levelPct
 } coco_std_cmd_set_level_with_onoff_t;
 
  /*************************************************************************************

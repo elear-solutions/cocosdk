@@ -37,12 +37,14 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of air quality command
 typedef enum {
   COCO_STD_CMD_AIRQLTY_MIN = -1,
   COCO_STD_CMD_AIRQLTY_MAX,
   COCO_STD_CMD_AIRQLTY_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_air_quality_t;
 
+// Possible values of air quality attribute
 typedef enum {
   COCO_STD_ATTR_AIRQLTY_MIN = -1,
   COCO_STD_ATTR_AIRQLTY_TOTAL_VOC_PPB, // Volatile Organic Compounds Particles measured in the air,

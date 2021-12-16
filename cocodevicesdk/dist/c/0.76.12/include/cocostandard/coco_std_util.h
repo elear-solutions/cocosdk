@@ -480,15 +480,18 @@
 #define COCO_STD_JSON_MEASURED_POWER                      "measuredPower"
 #define COCO_STD_JSON_DEVICE_RESRC_NAME                   "deviceResourceName"
 
+// Macros of 'keys' in stream buffer sizes command status params JSON
 #define COCO_STD_PARAMS_STREAM_RECEIVE_BUFFER_SIZE        "receiveBufferSize"
 #define COCO_STD_PARAMS_STREAM_SEND_BUFFER_SIZE           "sendBufferSize"
 
+// Macros of 'keys' in brand search params JSON
 #define COCO_STD_JSON_CATEGORY_ID                         "categoryId"
 #define COCO_STD_JSON_BRAND_SEARCH_STRING                 "brandSearchString"
 #define COCO_STD_JSON_BRAND_ID                            "brandId"
 #define COCO_STD_JSON_PAIRING_CODE                        "pairingCode"
 #define COCO_STD_JSON_PAIRING_CODES                       "pairingCodes"
 
+// Macros of 'keys' in hvac fan params JSON
 #define COCO_STD_JSON_POWER_ON_FLAG                       "powerOnFlag"
 #define COCO_STD_JSON_FAN_SPEED                           "fanSpeed"
 #define COCO_STD_JSON_MODE                                "mode"
@@ -497,32 +500,39 @@
 #define COCO_STD_JSON_COMMAND_ID                          "commandId"
 #define COCO_STD_JSON_COMMAND_PARAMS_VALUES_STRUCT        "commandParamValuesStruct"
 
+// Macros of 'keys' in remote control params JSON
 #define COCO_STD_JSON_APPLIANCE_ID                        "applianceId"
 #define COCO_STD_JSON_APPLIANCE_NAME                      "applianceName"
 #define COCO_STD_JSON_PROGRAMMING_MODE                    "programmingMode"
 
+// Macros of 'keys' in pairing capability command params JSON
 #define COCO_STD_JSON_COMMAND_ID_ARR                      "commandIdArray"
 #define COCO_STD_JSON_ATTRIBUTE_ID_ARR                    "attributeIdArray"
 
+// Macros of 'keys' in info request search params JSON
 #define COCO_STD_JSON_OFFSET_INDEX                        "offsetIndex"
 #define COCO_STD_JSON_SEARCH_TYPE                         "searchType"
 #define COCO_STD_JSON_SORT_BY_ORDER                       "sortByOrder"
 #define COCO_STD_JSON_SORT_BY_TYPE                        "sortByType"
 #define COCO_STD_JSON_SEARCH_CRITERIA                     "searchCriteria"
 
+// Macros of 'keys' in brand search response params JSON
 #define COCO_STD_JSON_TOTAL_SEARCH_COUNT                  "totalSearchCount"
 #define COCO_STD_JSON_BRAND_NAME                          "brandName"
 #define COCO_STD_JSON_SEARCH_RESULTS_ARR                  "searchResultsArr"
 #define COCO_STD_JSON_COMMAND_RESPONSE                    "commandResponse"
 
+// Macros of 'keys' in rename button params JSON
 #define COCO_STD_JSON_BUTTON_INFO                         "buttonInfo"
 #define COCO_STD_JSON_BUTTON_ID                           "buttonId"
 #define COCO_STD_JSON_BUTTON_NAME                         "buttonName"
 
-#define PLATFORM_16_BIT_POINTER_SIZE                       2
-#define PLATFORM_32_BIT_POINTER_SIZE                       4
-#define PLATFORM_64_BIT_POINTER_SIZE                       8
+// Macros of 'keys' in rule network command params JSON
+#define PLATFORM_16_BIT_POINTER_SIZE                       2      // ruleStartTime variable is of 16 bit pointer
+#define PLATFORM_32_BIT_POINTER_SIZE                       4      // ruleStartTime variable is of 32 bit pointer
+#define PLATFORM_64_BIT_POINTER_SIZE                       8      // ruleStartTime variable is of 64 bit pointer
 
+// Macros of 'keys' in media management command params JSON
 #define COCO_STD_JSON_CHANNEL_ID                          "channelId"
 #define COCO_STD_JSON_CHANNEL_PORT                        "channelPort"
 #define COCO_STD_JSON_STREAM_SDP                          "streamSdp"

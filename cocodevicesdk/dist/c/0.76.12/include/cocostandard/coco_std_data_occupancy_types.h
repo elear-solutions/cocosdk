@@ -40,12 +40,14 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of occupancy command
 typedef enum {
   COCO_STD_CMD_OCCUPANCY_MIN = -1,
   COCO_STD_CMD_OCCUPANCY_MAX,
   COCO_STD_CMD_OCCUPANCY_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_occupancy_t;
 
+// Possible values of occupancy attribute
 typedef enum {
   COCO_STD_ATTR_OCCUPANCY_MIN = -1,
   COCO_STD_ATTR_PRESENCE_DETECTED_FLAG,   // COCO_STD_DATA_TYPE_BOOLEAN

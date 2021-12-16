@@ -38,6 +38,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of network config attribute
 typedef enum {
   COCO_STD_ATTR_NW_CONFIG_MIN = -1,
   COCO_STD_ATTR_NW_CONFIG_RSSI,      // COCO_STD_DATA_TYPE_UINT8

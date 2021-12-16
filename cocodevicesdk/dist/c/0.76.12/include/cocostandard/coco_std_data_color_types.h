@@ -43,6 +43,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of color control command
 typedef enum {
   COCO_STD_CMD_COLOR_MIN = -1,
   COCO_STD_CMD_SET_COLOR_RGB,
@@ -57,6 +58,7 @@ typedef enum {
   COCO_STD_CMD_COLOR_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_color_control_t;
 
+// Possible values of color control attribute
 typedef enum {
   COCO_STD_ATTR_COLOR_MIN = -1,
   COCO_STD_ATTR_COLOR_RED,                // This attribute is deprecated COCO_STD_DATA_TYPE_UINT8
@@ -77,39 +79,52 @@ typedef enum {
   COCO_STD_ATTR_COLOR_UBOUND = 0x7FFFFFFF
 } coco_std_attr_color_control_t;
 
+// Structure of set rgb color command
 typedef struct {
   uint8_t red;
   uint8_t green;
   uint8_t blue;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
 } coco_std_cmd_set_color_rgb_t;
 
+// Structure of set hsl color command
 typedef struct {
   uint16_t hueDegrees;
-  uint8_t saturationPct;
-  uint8_t luminancePct;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
+  uint8_t saturationPct;            // Saturation in percentage
+  uint8_t luminancePct;             // luminance in percentage
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
 } coco_std_cmd_set_color_hsl_t;
 
+// Structure of set temperature color command
 typedef struct {
-  uint32_t colorTemperatureKelvin;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
+  uint32_t colorTemperatureKelvin;  // color temperature in Kelvin
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
 } coco_std_cmd_set_color_temp_t;
 
+// Structure of fetch color component command
 typedef struct {
-  uint8_t *colorCompIdArr;
-  uint8_t numOfColorCompIds;
+  uint8_t *colorCompIdArr;          // Array of color component Id's
+  uint8_t numOfColorCompIds;        // Count of color component Id's
 } coco_std_cmd_fetch_color_components_t;
 
+// Structure of set color component command
 typedef struct {
-  uint8_t *colorCompIdArr;
-  uint8_t *colorCompValuesArr;
-  uint8_t numOfColorCompIds;
-  int32_t useDefaultTransTimeFlag;
-  uint32_t transitionTimeMs;
+  uint8_t *colorCompIdArr;          // Array of color component Id's
+  uint8_t *colorCompValuesArr;      // Array of color component values
+  uint8_t numOfColorCompIds;        // Count of color component Id's
+  int32_t useDefaultTransTimeFlag;  // Flag to indicate transitionTimeMs is needed or not for transition of state.
+                                    // true indicates to take default transition time declare in OEM.
+                                    // false indicates to take transitionTimeMs
+  uint32_t transitionTimeMs;        // Transition time in miliseconds to change the state
 } coco_std_cmd_set_color_components_t;
 
  /*************************************************************************************

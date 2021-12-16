@@ -38,6 +38,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of image command
 typedef enum {
   COCO_STD_CMD_IMAGE_MIN = -1,
   COCO_STD_CMD_IMAGE_SET_AF_MODE,
@@ -57,6 +58,7 @@ typedef enum {
   COCO_STD_CMD_IMAGE_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_image_t;
 
+// Possible values of image control attribute
 typedef enum {
   COCO_STD_ATTR_IMAGE_CTRL_MIN = -1,
   COCO_STD_ATTR_IMAGE_CTRL_AF_MODE_FLAG,            // COCO_STD_DATA_TYPE_BOOLEAN
@@ -80,16 +82,19 @@ typedef enum {
   COCO_STD_ATTR_IMAGE_CTRL_UBOUND = 0x7FFFFFFF
 } coco_std_attr_image_ctrl_t;
 
+// Structure of image set text command
 typedef struct {
   char *text;
   uint8_t xPosition;
   uint8_t yPosition;
 } coco_std_cmd_img_set_text;
 
+// Structure of image set mirror command
 typedef struct {
   int32_t onFlag;                        // 0 = off, 1 = on
 } coco_std_cmd_img_set_mirror_t;
 
+// Structure of image set flip command
 typedef struct {
   int32_t onFlag;                        // 0 = off, 1 = on
 } coco_std_cmd_img_set_flip_t;

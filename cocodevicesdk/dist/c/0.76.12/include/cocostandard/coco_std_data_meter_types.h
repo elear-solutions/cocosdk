@@ -42,6 +42,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of meter command
 typedef enum {
   COCO_STD_CMD_METER_MIN = -1,
   COCO_STD_CMD_METER_RESET,
@@ -51,6 +52,7 @@ typedef enum {
   COCO_STD_CMD_METER_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_meter_t;
 
+// Possible values of meter attribute
 typedef enum {
   COCO_STD_ATTR_METER_MIN = -1,
   COCO_STD_ATTR_METER_CONSUMPTION_KWH,        // COCO_STD_DATA_TYPE_DOUBLE
@@ -68,14 +70,17 @@ typedef enum {
   COCO_STD_ATTR_METER_UBOUND = 0x7FFFFFFF
 } coco_std_attr_meter_t;
 
+// Structure of fetch consumption command
 typedef struct {
   int32_t scale;
 } coco_std_cmd_fetch_consumption_t;
 
+// Structure of fetch demand command
 typedef struct {
   int32_t scale;
 } coco_std_cmd_fetch_demand_t;
 
+// Possible values of consumption scale
 typedef enum {
   COCO_STD_CONS_SCALE_MIN = -1,
   COCO_STD_CONS_SCALE_KW,
@@ -95,6 +100,7 @@ typedef enum {
   COCO_STD_CONS_SCALE_UBOUND = 0x7FFFFFFF
 } coco_std_consumption_scale_t;
 
+// Possible values of demand scale
 typedef enum {
   COCO_STD_DEMAND_SCALE_MIN = -1,
   COCO_STD_DEMAND_SCALE_KWH,

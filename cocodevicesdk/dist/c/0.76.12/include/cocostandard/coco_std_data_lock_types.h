@@ -42,6 +42,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of lock control command
 typedef enum {
   COCO_STD_CMD_LOCK_MIN = -1,
   COCO_STD_CMD_LOCK,
@@ -59,6 +60,7 @@ typedef enum {
   COCO_STD_CMD_LOCK_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_lock_control_t;
 
+// Possible values of lock control attribute
 typedef enum {
   COCO_STD_ATTR_LOCK_MIN = -1,
   COCO_STD_ATTR_LOCKED_FLAG,          // COCO_STD_DATA_TYPE_BOOLEAN
@@ -70,6 +72,7 @@ typedef enum {
   COCO_STD_ATTR_LOCK_UBOUND = 0x7FFFFFFF
 } coco_std_attr_lock_control_t;
 
+// Possible values of lock user status
 typedef enum {
   COCO_STD_LOCK_USER_STATUS_MIN = -1,
   COCO_STD_LOCK_USER_STATUS_AVAILABLE,
@@ -79,6 +82,7 @@ typedef enum {
   COCO_STD_LOCK_USER_STATUS_UBOUND = 0x7FFFFFFF
 } coco_std_lock_user_status_t;
 
+// Possible values of lock user type
 typedef enum {
   COCO_STD_LOCK_USER_TYPE_MIN = -1,
   COCO_STD_LOCK_USER_TYPE_UNRESTRICTED_USER,
@@ -90,50 +94,60 @@ typedef enum {
   COCO_STD_LOCK_USER_TYPE_UBOUND = 0x7FFFFFFF
 } coco_std_lock_user_type_t;
 
+// Structure of lock command
 typedef struct {
-  char *pinRfidCode;
+  char *pinRfidCode;    // RFID pin code of lock command
 } coco_std_cmd_lock_t;
 
+// Structure of unlock command
 typedef struct {
-  char *pinRfidCode;
-  uint32_t timeoutMs;
+  char *pinRfidCode;    // RFID pin code of unlock command
+  uint32_t timeoutMs;   // Timeout in mili seconds
 } coco_std_cmd_unlock_t;
 
+// Structure of lock toggle command
 typedef struct {
-  char *pinRfidCode;
+  char *pinRfidCode;    // RFID pin code of lock toggle command
 } coco_std_cmd_lock_toggle_t;
 
+// Structure of lock set pin command
 typedef struct {
-  uint32_t userId;
-  int32_t userStatus;
-  int32_t userType;
-  char *pinRfidCode;
+  uint32_t userId;      // Unique Id of user
+  int32_t userStatus;   // Status of user, It will take values from the enum - coco_std_lock_user_status_t
+  int32_t userType;     // Type of user, It will take values from the enum - coco_std_lock_user_type_t
+  char *pinRfidCode;    // RFID pin code of lock command
 } coco_std_cmd_lock_set_pin_t;
 
+// Structure of lock clear pin command
 typedef struct {
-  uint32_t userId;
+  uint32_t userId;      // Unique Id of user
 } coco_std_cmd_lock_clear_pin_t;
 
+// Structure of lock set user status command
 typedef struct {
-  uint32_t userId;
-  int32_t userStatus;
+  uint32_t userId;      // Unique Id of user
+  int32_t userStatus;   // Status of user, It will take values from the enum - coco_std_lock_user_status_t
 } coco_std_cmd_lock_set_user_status_t;
 
+// Structure of lock set user type command
 typedef struct {
-  uint32_t userId;
-  int32_t userType;
+  uint32_t userId;      // Unique Id of user
+  int32_t userType;     // Type of user, It will take values from the enum - coco_std_lock_user_type_t
 } coco_std_cmd_lock_set_user_type_t;
 
+// Structure of fetch lock pin code command
 typedef struct {
-  uint32_t userId;
+  uint32_t userId;      // Unique Id of user
 } coco_std_cmd_fetch_lock_pin_code_t;
 
+// Structure of fetch lock user status command
 typedef struct {
-  uint32_t userId;
+  uint32_t userId;      // Unique Id of user
 } coco_std_cmd_fetch_lock_user_status_t;
 
+// Structure of fetch lock user type command
 typedef struct {
-  uint32_t userId;
+  uint32_t userId;      // Unique Id of user
 } coco_std_cmd_fetch_lock_user_type_t;
 
  /*************************************************************************************

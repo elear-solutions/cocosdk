@@ -38,6 +38,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of fire sensing command
 typedef enum {
   COCO_STD_CMD_FIRE_SENSING_MIN = -1,
   COCO_STD_CMD_FIRE_SENSING_ENABLE,
@@ -46,6 +47,7 @@ typedef enum {
   COCO_STD_CMD_FIRE_SENSING_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_fire_sensing_t;
 
+// Possible values of fire sensing attribute
 typedef enum {
   COCO_STD_ATTR_FIRE_SENSING_MIN = -1,
   COCO_STD_ATTR_CO_DETECTED_FLAG,           // COCO_STD_DATA_TYPE_BOOLEAN

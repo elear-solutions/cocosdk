@@ -38,6 +38,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of warning command
 typedef enum {
   COCO_STD_CMD_WARNING_MIN = -1,
   COCO_STD_CMD_WARNING_START,
@@ -46,6 +47,7 @@ typedef enum {
   COCO_STD_CMD_WARNING_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_warning_dev_t;
 
+// Possible values of warning type
 typedef enum {
   COCO_STD_WARNING_TYPE_MIN = -1,
   COCO_STD_WARNING_TYPE_BURGLAR,
@@ -58,10 +60,12 @@ typedef enum {
   COCO_STD_ATTR_WARNING_UBOUND = 0x7FFFFFFF
 } coco_std_warning_type_t;
 
+// Structure of start warning command
 typedef struct {
   int32_t warningType;
 } coco_std_cmd_warning_start_t;
 
+// Possible values of warning attribute
 typedef enum {
   COCO_STD_ATTR_WARNING_MIN = -1,
   COCO_STD_ATTR_WARNING_STATE,   // COCO_STD_DATA_TYPE_BOOLEAN

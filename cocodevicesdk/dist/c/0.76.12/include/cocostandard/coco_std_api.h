@@ -153,6 +153,7 @@ typedef enum {
   COCO_STD_RCVR_TYPE_UBOUND = 0x7FFFFFFF
 } coco_std_receiver_type_t;
 
+// Possible protocol id of a resource
 typedef enum {
   COCO_STD_PROTOCOL_MIN = -1,
   COCO_STD_PROTOCOL_ZWAVE,
@@ -164,20 +165,20 @@ typedef enum {
 
 // metadata struct
 typedef struct {
-  char *metadata;
-  uint32_t subclusterId;
+  char *metadata;         // meta data of resource in particular sub-cluster
+  uint32_t subclusterId;  // Unique Id of sub-cluster
 } coco_std_subcluster_metadata_t;
 
 // Summary info of a resource
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
-  char *resourceName;
-  char *manufacturer;
-  char *model;
-  char *firmwareVersion;
-  char *metadata;
+  char *networkId;            // Unique Id of cocoNet
+  uint32_t deviceNodeId;      // Unique If of device
+  char *resourceEui;          // Unique Id of resource
+  char *resourceName;         // Name of resource
+  char *manufacturer;         // Manufacture Name
+  char *model;                // model name of resource
+  char *firmwareVersion;      // Firmware version of resource
+  char *metadata;             // Meta data of resource
   int32_t powerSource;        // It will take values from the enum - coco_std_power_source_t
   int32_t receiverType;       // It will take values from the enum - coco_std_receiver_type_t
   int32_t explorationStatus;  // It takes values from the enum coco_std_status_code_t.
@@ -234,13 +235,13 @@ typedef enum {
 
 // Info of a capability of a resource
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
-  int32_t capabilityId; // It will take values from the enum - coco_std_capability_t
-  char *capabilityName;
-  uint32_t stdCmdArrCount;
-  int32_t *stdCmdArr;
+  char *networkId;                    // Unique Id of cocoNet
+  uint32_t deviceNodeId;              // Unique Id of device
+  char *resourceEui;                  // Unique Id of resource
+  int32_t capabilityId;               // It will take values from the enum - coco_std_capability_t
+  char *capabilityName;               // Name of capability
+  uint32_t stdCmdArrCount;            // Count of Standard supported command
+  int32_t *stdCmdArr;                 // Standard supported command
   uint16_t createdByUserId;           // Used internally by the COCO SDKs
   time_t createdTimestamp;            // Used internally by the COCO SDKs
 } coco_std_resource_capability_info_t;
@@ -280,28 +281,28 @@ typedef enum {
 
 // Info of an attribute of a capability of a resource
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  char *networkId;                  // Unique Id of cocoNet
+  uint32_t deviceNodeId;            // Unique Id of device
+  char *resourceEui;                // Unique Id of resource
   int32_t capabilityId;             // It will take values from the enum - coco_std_capability_t
-  char *capabilityName;
-  int32_t attributeId;
-  char *attribName;
-  char *attribDesc;
+  char *capabilityName;             // Name of capability
+  int32_t attributeId;              // Unique Id of attribute
+  char *attribName;                 // Attribute name
+  char *attribDesc;                 // Attribute description
   int32_t dataType;                 // It will take values from the enum - coco_std_data_type_t
   uint32_t dataArrayLen;            // Length of the array if dataType is an array
-  void *minValue;
-  void *maxValue;
-  void *defaultValue;
-  void *currentValue;
-  uint32_t minReportingIntervalMs;
-  uint32_t maxReportingIntervalMs;
-  void *reportableChange;
+  void *minValue;                   // minimum value
+  void *maxValue;                   // maximum value
+  void *defaultValue;               // Default value of attribute of a capability of a resource
+  void *currentValue;               // Current value of attribute of a capability of a resource
+  uint32_t minReportingIntervalMs;  // minimum interval reporting time in miliseconds
+  uint32_t maxReportingIntervalMs;  // minimum interval reporting time in miliseconds
+  void *reportableChange;           // Any change reported
   int32_t isRealTimeUpdate;         // If this is being sent as a result of resource updating its state,
                                     // set it as 1. Otherwise, if the old state is being sent, set it as 0
   uint16_t createdByUserId;         // Used internally by the COCO SDKs
   time_t createdTimestamp;          // Used internally by the COCO SDKs
-  time_t lastUpdateTimestamp;
+  time_t lastUpdateTimestamp;       // last update received
   int32_t persist;                  /* Used to persist the data on disk by Device sdk
                                        1: Persist the attribute record
                                        0: Do not persist the attribute record */
@@ -309,31 +310,31 @@ typedef struct {
 
 // All information about a resource capability and its attributes
 typedef struct {
-  coco_std_resource_capability_info_t resourceCapabilityInfo;
-  uint32_t attributeArrCount;
-  coco_std_resource_attribute_info_t *attributeArr;
+  coco_std_resource_capability_info_t resourceCapabilityInfo; // information of resource capability
+  uint32_t attributeArrCount;                                 // Count of attribute in array
+  coco_std_resource_attribute_info_t *attributeArr;           // Array of attribute
 } coco_std_resource_capability_t;
 
 // All information about a resource, including its capabilities and attributes
 typedef struct {
-  coco_std_resource_summary_info_t resourceSummaryInfo;
-  uint32_t capabilityArrCount;
-  coco_std_resource_capability_t *capabilityArr;
+  coco_std_resource_summary_info_t resourceSummaryInfo;       // Information of resource summary
+  uint32_t capabilityArrCount;                                // Count of capability in array
+  coco_std_resource_capability_t *capabilityArr;              // Array of capability
 } coco_std_resource_t;
 
 // Resource command sent from Client App to OEM App
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  char *networkId;          // Unique Id of cocoNet
+  uint32_t deviceNodeId;    // Unique Id of device
+  char *resourceEui;        // Unique Id of resource
   int32_t capabilityId;     // It will take values from the enum - coco_std_capability_t
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  uint32_t cmdSenderNodeId; // command sender node Id
+  uint32_t cmdSeqNum;       // sequence number of command
   uint32_t timeoutMs;       // Timeout in ms after which SDK will invoke the respective status
                             // callback with status as COCO_STD_STATUS_TIMEOUT and ignore status
                             // received for that particular command. timeoutMs = 0 means infinity.
-  int32_t cmdId;
-  void *cmdParams;
+  int32_t cmdId;            // Unique Id of resource command
+  void *cmdParams;          // Params of resource command
 } coco_std_resource_cmd_t;
 
 // Possible parameters which can be requested by OEM App from Client App
@@ -372,7 +373,7 @@ typedef enum {
 // Parameter key-value struct used by coco_std_info_response_t and coco_std_info_request_t
 typedef struct {
   int32_t key;  /* It will take values from coco_std_parameter_key_t enum */
-  void *value;
+  void *value;  // Value for the key
 } coco_std_parameter_t;
 
 // Possible values of command status
@@ -405,35 +406,35 @@ typedef enum {
 
 // Resource command status sent from OEM App to Client App
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  char *networkId;          // Unique Id of cocoNet
+  uint32_t deviceNodeId;    // unique Id of device
+  char *resourceEui;        // Unique Id of resource
   int32_t capabilityId;     // It will take values from the enum - coco_std_capability_t
-  int32_t cmdId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
-  uint32_t paramArrCnt;
-  coco_std_parameter_t *paramArr;
+  int32_t cmdId;            // command Id
+  uint32_t cmdSenderNodeId; // command sender Node Id
+  uint32_t cmdSeqNum;       // sequence number of command
+  uint32_t paramArrCnt;     // count of params in an array
+  coco_std_parameter_t *paramArr; // Array of params structure
   int32_t status;           // It will take values from the enum - coco_std_status_code_t
   void *cmdResponse;        // typecast to struct depending on capapilityId and commandId
 } coco_std_resource_cmd_status_t;
 
 // Sent from Device SDK to Client App to notify the firmware update start and completion
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  uint32_t packetId;
+  char *networkId;        // Unique Id of cocoNet
+  uint32_t deviceNodeId;  // Unique Id of device
+  uint32_t packetId;      // Unique Id of firmware update notification packet
   int32_t status;         // It will take values from the enum - coco_std_status_code_t
-  char *oldVersion;
-  char *newVersion;
+  char *oldVersion;       // Old firmware version of device
+  char *newVersion;       // New firmware version of device
 } coco_std_fw_update_notif_t;
 
 // Advertisement of a discovered resource sent from OEM App to Client App
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
-  char *resourceName;
+  char *networkId;             // Unique Id of cocoNet
+  uint32_t deviceNodeId;       // Unique Id of device
+  char *resourceEui;           // Unique Id of resource
+  char *resourceName;          // Name of a resource
   int32_t protocolId;          //  It takes values from the enum coco_std_protocol_id_t
   uint32_t devCmdSenderNodeId; // Set it to 0xFFFFFFFF for advertising to all owners
 } coco_std_resource_advertise_t;
@@ -453,26 +454,26 @@ typedef enum {
 
 // Message sent from OEM App to be displayed on Client App when including/excluding a resource
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  uint32_t devCmdSeqNum;
-  uint32_t devCmdSenderNodeId;
-  char *messageTitle;
-  char *messageText;
+  char *networkId;              // Unique Id of cocoNet
+  uint32_t deviceNodeId;        // Unique Id of device
+  uint32_t devCmdSeqNum;        // sequence number of device command
+  uint32_t devCmdSenderNodeId;  // sender node Id of device command
+  char *messageTitle;           // Title of message
+  char *messageText;            // Text of message
   int32_t messageType;          // It will take values from coco_std_message_type_t enum
 } coco_std_message_t;
 
 // Info request for one/more parameters sent between OEM App and Client App
 typedef struct {
-  char *networkId;
-  uint32_t reqNodeId;
-  uint32_t requestId;
-  uint32_t cmdSeqNum;
-  uint32_t respNodeId;
-  uint32_t mandatoryInfoRequestArrCount;
-  coco_std_parameter_t *mandatoryInfoRequestArr;
-  uint32_t optionalInfoRequestArrCount;
-  coco_std_parameter_t *optionalInfoRequestArr;
+  char *networkId;      // Unique Id of cocoNet
+  uint32_t reqNodeId;   // Node Id of the requested Node
+  uint32_t requestId;   // Unique Id of request
+  uint32_t cmdSeqNum;   // Sequence number of command
+  uint32_t respNodeId;  // Node Id of response Node
+  uint32_t mandatoryInfoRequestArrCount;          // Count of mandatory Info request array
+  coco_std_parameter_t *mandatoryInfoRequestArr;  // Array of structure of coco_std_parameter_t
+  uint32_t optionalInfoRequestArrCount;           // Count of optional Info request array
+  coco_std_parameter_t *optionalInfoRequestArr;   // Array of structure of coco_std_parameter_t
   char *messageText;
   uint32_t timeoutMs;   // Timeout in ms after which SDK will invoke the info
                         // request status callback with status as COCO_STD_STATUS_TIMEOUT
@@ -481,48 +482,48 @@ typedef struct {
 } coco_std_info_request_t;
 
 typedef struct {
-  char *networkId;
+  char *networkId;        // Unique Id of cocoNet
   uint32_t nodeId;        // Ignored if 0
-  char *resourceEUI;      // Ignored if NULL
+  char *resourceEUI;      // Unique Id of resource
   int32_t capabilityId;   // Ignored if COCO_STD_CAP_MIN or -1
   int32_t attributeId;    // Ignored if capabilityId is COCO_STD_CAP_MIN or COCO_STD_ATTR_*_MIN or -1
-  uint16_t sceneId;       // Ignored if 0
-  uint16_t ruleId;        // Ignored if 0
+  uint16_t sceneId;       // Unique Id of scene, Ignored if 0
+  uint16_t ruleId;        // Unique Id of rule, Ignored if 0
 } coco_std_upload_triggered_uri_t;
 
 typedef struct {
-  char *networkId;
+  char *networkId;        // Unique Id of cocoNet
   uint32_t nodeId;        // ignored if 0
-  char *resourceEUI;      // Ignored if NULL
+  char *resourceEUI;      // Unique Id of resource
   int32_t capabilityId;   // Ignored if COCO_STD_CAP_MIN or -1
   int32_t attributeId;    // Ignored if capabilityId is COCO_STD_CAP_MIN or COCO_STD_ATTR_*_MIN or -1
 } coco_std_source_uri_t;
 
 //For COCO_STD_PARAM_AVAIL_LISTEN_PORT:
 typedef struct {
-  uint8_t portCount;
-  int32_t transportType;
+  uint8_t portCount;      // Count of ports
+  int32_t transportType;  // It will take values from coco_std_tunnel_transport_type_t enum
   int32_t consecutivePort;
 } coco_std_info_req_avail_listen_port_t;
 
 typedef struct {
-  uint16_t portArrCount;
-  uint16_t *portArr;
+  uint16_t portArrCount;  // Count of ports
+  uint16_t *portArr;      // Array of ports
 } coco_std_info_resp_avail_listen_port_t;
 
 // For COCO_STD_PARAM_PIN:
 typedef struct {
-  char *pin;
+  char *pin;    // Pin of Info response
 } coco_std_info_resp_pin_t;
 
 // For COCO_STD_PARAM_DSK
 typedef struct {
-  char *dsk;
+  char *dsk;      // Key to add the z-wave plus resource
 } coco_std_info_resp_dsk_t;
 
 // For COCO_STD_PARAM_INSTALL_CODE
 typedef struct {
-  char *installCode;
+  char *installCode;  // Install code of info response
 } coco_std_info_resp_install_code_t;
 
 //For COCO_STD_PARAM_CONTENT_SEARCH:
@@ -545,51 +546,51 @@ typedef enum {
 
 // For COCO_STD_PARAM_REMOTE_PAIRING_CODES
 typedef struct {
-  char *resourceEui;
-  uint32_t categoryId;
-  uint16_t brandId;
+  char *resourceEui;      // Unique Id of resource
+  uint32_t categoryId;    // Unique Id of category
+  uint16_t brandId;       // Unique Id of brand
 } coco_std_info_req_remote_pairing_codes_t;
 
 typedef struct {
-  uint16_t numOfPairingCodes;
-  uint16_t *pairingCode;
+  uint16_t numOfPairingCodes; // Count of pairing codes
+  uint16_t *pairingCode;      // Array of pairing codes
 } coco_std_info_resp_remote_pairing_codes_t;
 
 // For COCO_STD_PARAM_REMOTE_PAIR_CAPABILITIES
 typedef struct {
-  char *resourceEui;
-  uint32_t categoryId;
-  uint16_t brandId;
-  uint16_t pairingCode;
+  char *resourceEui;      // Unique Id of resource
+  uint32_t categoryId;    // Unique Id of category
+  uint16_t brandId;       // Unique Id of brand
+  uint16_t pairingCode;   // Paring code of info request of remote pair capability
 } coco_std_info_req_remote_pair_cap_t;
 
 typedef struct {
-  int32_t capabilityId;
-  uint8_t numOfCommandIdSupp;
-  uint8_t *commandIdArray;
-  uint8_t numOfAttrSupp;
-  uint8_t *attributeIdArray;
+  int32_t capabilityId;         // It will take values from the enum - coco_std_capability_t
+  uint8_t numOfCommandIdSupp;   // Count of supported command Id
+  uint8_t *commandIdArray;      // Array of supported command Id
+  uint8_t numOfAttrSupp;        // Count of supported attribute Id
+  uint8_t *attributeIdArray;    // Array of supported attribute Id
 } coco_std_info_resp_remote_pair_cap_t;
 
 // For COCO_STD_PARAM_REMOTE_BUTTON_INFO
 typedef struct {
-  char *applianceId;
-  char *resourceEui;
+  char *applianceId;            // Unique Id of appliance
+  char *resourceEui;            // Unique Id of resource
 } coco_std_info_req_remote_button_info_t;
 
 typedef struct {
-  char *buttonInfo;
+  char *buttonInfo;             // Info of button
 } coco_std_info_resp_remote_button_info_t;
 
 // For COCO_STD_PARAM_SEARCH
 typedef struct {
-  uint32_t categoryId;
-  char *brandSearchString;
+  uint32_t categoryId;          // Unique Id of category
+  char *brandSearchString;      // string of Brand search criteria
 } coco_std_search_criteria_brand_t;
 
 typedef struct {
-  uint16_t brandId;
-  char *brandName;
+  uint16_t brandId;             // Unique Id of category
+  char *brandName;              // Name of brand
 } coco_std_search_results_brand_t;
 
 typedef struct {
@@ -603,8 +604,8 @@ typedef struct {
 } coco_std_info_req_search_t;
 
 typedef struct {
-  int64_t totalSearchCount;
-  uint8_t reqSearchCount;
+  int64_t totalSearchCount;   // Total search results count
+  uint8_t reqSearchCount;     // search results count
   int32_t searchType;         // value from coco_std_search_type_t enum
   void *searchResultsArr;     // For brand - this is a ptr to an array of
                               // coco_std_search_results_brand_t structures
@@ -627,16 +628,17 @@ typedef struct {
 
 // For COCO_STD_PARAM_CONTENT_PLAYBACK:
 typedef struct {
-  uint64_t contentId;
+  uint64_t contentId;              // Unique Id of content
   int32_t streamProtocolType;      //  It takes values from the enum coco_std_stream_protocol_type_t
 } coco_std_info_req_content_playback_t;
 
 // For COCO_STD_PARAM_STREAM_BUFFER_SIZES:
 typedef struct {
-  uint32_t sendBufferSize;
-  uint32_t receiveBufferSize;
+  uint32_t sendBufferSize;         // Buffer size of send stream
+  uint32_t receiveBufferSize;      // Buffer size of receive stream
 } coco_std_stream_buffer_sizes_t;
 
+// Possible values of stream protocol type
 typedef enum {
   COCO_STD_STREAM_PROTOCOL_TYPE_MIN = -1,
   COCO_STD_STREAM_PROTOCOL_TYPE_DASH,
@@ -647,6 +649,7 @@ typedef enum {
   COCO_STD_STREAM_PROTOCOL_TYPE_UBOUND = 0x7FFFFFFF
 } coco_std_stream_protocol_type_t;
 
+// Possible values of content playback request Error
 typedef enum {
   COCO_STD_CONTENT_PLAYBACK_REQ_ERROR_MIN = -1,
   COCO_STD_CONTENT_PLAYBACK_REQ_ERROR_NONE,
@@ -660,10 +663,11 @@ typedef enum {
 
 typedef struct {
   int32_t streamProtocolType;      //  It takes values from the enum coco_std_stream_protocol_type_t
-  char *playbackUrl;
+  char *playbackUrl;               // Url of info response of content playback
   int32_t contentPlaybackReqError; //  It takes values from the enum coco_std_content_playback_req_error_t
 } coco_std_info_resp_content_playback_t;
 
+// Possible values of storage content type
 typedef enum {
   COCO_STD_STORAGE_CONTENT_MIN = -1,
   COCO_STD_STORAGE_CONTENT_STREAM,
@@ -673,6 +677,7 @@ typedef enum {
   COCO_STD_STORAGE_CONTENT_UBOUND = 0x7FFFFFFF
 } coco_std_storage_content_type_t;
 
+// Possible values of storage upload trigger type
 typedef enum {
   COCO_STD_STORAGE_UPLOAD_TRIGGER_MIN = -1,
   COCO_STD_STORAGE_UPLOAD_TRIGGER_USER,
@@ -684,33 +689,33 @@ typedef enum {
 } coco_std_storage_upload_trigger_type_t;
 
 typedef struct {
-  uint64_t contentId;
-  coco_std_source_uri_t sourceUri;
-  int32_t contentType;
-  int32_t uploadTriggerType;
-  coco_std_upload_triggered_uri_t uploadTriggeredUri;
-  uint32_t size;
-  char *staticLink;
-  char *userMetaData;
-  uint64_t createdTimestamp;
-  uint32_t contentDuration;
+  uint64_t contentId;                                 // Unique Id of content
+  coco_std_source_uri_t sourceUri;                    // Ignored if NULL
+  int32_t contentType;                                //  It takes values from the enum coco_std_storage_content_type_t
+  int32_t uploadTriggerType;                          //  It takes values from the enum coco_std_storage_upload_trigger_type_t
+  coco_std_upload_triggered_uri_t uploadTriggeredUri; // Ignored if NULL
+  uint32_t size;                                      // Size of storage content meta data
+  char *staticLink;                                   // Static link
+  char *userMetaData;                                 // meta data of user
+  uint64_t createdTimestamp;                          // created time stamp of storage content meta data
+  uint32_t contentDuration;                           // Duration of storage content meta data
 } coco_std_storage_content_metadata_t;
 
 typedef struct {
-  uint64_t totalSearchCount;
-  uint8_t reqSearchCount;
-  coco_std_storage_content_metadata_t *contentMetaDataArr;
+  uint64_t totalSearchCount;          // Total search results count
+  uint8_t reqSearchCount;             // search results count
+  coco_std_storage_content_metadata_t *contentMetaDataArr;  // Array of content meta data
 } coco_std_info_resp_content_search_t;
 
 // For COCO_STD_PARAM_USER_DEFINED:
 typedef struct {
-  char *request;
-  uint16_t requestLen;
+  char *request;                      // request of user define info request
+  uint16_t requestLen;                // request length
 } coco_std_info_req_user_defined_t;
 
 typedef struct {
-  char *response;
-  uint16_t responseLen;
+  char *response;                     // response of user define info response
+  uint16_t responseLen;               // Response length
 } coco_std_info_resp_user_defined_t;
 
 //For COCO_STD_PARAM_PAIRING_TYPE:
@@ -724,19 +729,19 @@ typedef enum {
 
 // Info response for the requested parameters sent from Client App to OEM App
 typedef struct {
-  char *networkId;
-  uint32_t reqNodeId;
-  uint32_t requestId;
-  uint32_t cmdSeqNum;
-  uint32_t infoResponseArrCount;
-  coco_std_parameter_t *infoResponseArr;
+  char *networkId;                        // Unique Id of cocoNet
+  uint32_t reqNodeId;                     // Request node id
+  uint32_t requestId;                     // Response Node Id
+  uint32_t cmdSeqNum;                     // sequence number of command
+  uint32_t infoResponseArrCount;          // count of info response in an array
+  coco_std_parameter_t *infoResponseArr;  // Array of coco_std_parameter_t
 } coco_std_info_response_t;
 
 // Sent when a resource is removed from a Device
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  char *networkId;        // Unique Id of cocoNet
+  uint32_t deviceNodeId;  // Unique Id of device
+  char *resourceEui;      // Unique Id of resource
   uint32_t packetId;      // Used internally by the COCO SDKs
 } coco_std_removed_resource_t;
 
@@ -757,13 +762,13 @@ typedef enum {
 
 // Device command to update the name of a resource
 typedef struct {
-  char *resourceEui;
+  char *resourceEui;        // Unique Id of resource
   char *resourceName;
 } coco_std_device_cmd_upd_res_name_t;
 
 // Device command to update the metadata of a resource
 typedef struct {
-  char *resourceEui;
+  char *resourceEui;        // Unique Id of resource
   char *metadata;
 } coco_std_device_cmd_upd_res_meta_t;
 
@@ -774,23 +779,23 @@ typedef struct {
 
 // Device command to add a resource to a device
 typedef struct {
-  char *resourceEui;
-  int32_t protocolId;       //  It takes values from the enum coco_std_protocol_id_t
+  char *resourceEui;              // Unique Id of resource
+  int32_t protocolId;             // It takes values from the enum coco_std_protocol_id_t
   char *resourceMetadata;
-  uint32_t paramArrCount;
-  coco_std_parameter_t *paramArr;
+  uint32_t paramArrCount;         // Count of array of parameters
+  coco_std_parameter_t *paramArr; // Array of coco_std_parameter_t structure
 } coco_std_device_cmd_add_res_t;
 
 // Device command to remove a resource from a device
 typedef struct {
-  char *resourceEui;
-  uint32_t paramArrCount;
-  coco_std_parameter_t *paramArr;
+  char *resourceEui;              // Unique Id of resource
+  uint32_t paramArrCount;         // Count of array of parameters
+  coco_std_parameter_t *paramArr; // Array of coco_std_parameter_t structure
 } coco_std_device_cmd_rem_res_t;
 
 // Device command to force remove a resource from a device
 typedef struct {
-  char *resourceEui;
+  char *resourceEui;              // Unique Id of resource
 } coco_std_device_cmd_force_rem_res_t;
 
 // Device command to force remove a resource from a device
@@ -801,10 +806,10 @@ typedef struct {
 
 // Device command sent from Client App SDK to Device SDK
 typedef struct {
-  char *networkId;
+  char *networkId;          // Unique Id of cocoNet
   uint32_t deviceNodeId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  uint32_t cmdSenderNodeId; // sender Node Id of command
+  uint32_t cmdSeqNum;       // Sequence number of command
   uint32_t timeoutMs;       // Timeout in ms after which SDK will invoke the respective status
                             // callback with status as COCO_STD_STATUS_TIMEOUT and ignore status
                             // received for that particular command. timeoutMs = 0 means infinity.
@@ -815,10 +820,10 @@ typedef struct {
 
 // Device command status sent from Device SDK to Client App SDK
 typedef struct {
-  char *networkId;
+  char *networkId;          // Unique Id of cocoNet
   uint32_t deviceNodeId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  uint32_t cmdSenderNodeId; // sender node Id of command
+  uint32_t cmdSeqNum;       // sequence number of command
   int32_t status;           // It will take values from the enum - coco_std_status_code_t
   char **impactedResourceArr; /* As of now, it is only being used for commands
                                  COCO_STD_DEVICE_CMD_DISCOVER_RES and COCO_STD_DEVICE_CMD_ADD_RES.
@@ -854,10 +859,10 @@ typedef enum {
 
 // Resource of a zone
 typedef struct {
-  uint16_t zoneId;         // Used internally by the COCO SDKs
-  uint32_t deviceNodeId;
-  char *resourceEui;
-  char *resourceName;
+  uint16_t zoneId;          // Unique Id of zone, Used internally by the COCO SDKs
+  uint32_t deviceNodeId;    // Unique Id of device
+  char *resourceEui;        // Unique Id of resource
+  char *resourceName;       // Name of the resource
   char *metadata;
   uint16_t createdByUserId; // Used internally by the COCO SDKs
   time_t createdTimestamp;  // Used internally by the COCO SDKs
@@ -865,11 +870,11 @@ typedef struct {
 
 // All information about a Zone and its resources
 typedef struct {
-  char *networkId;
-  uint16_t zoneId;
-  char *zoneName;
-  uint16_t resourceArrCount;
-  coco_std_zone_resource_t *resourceArr;
+  char *networkId;                        // Unique Id of cocoNet
+  uint16_t zoneId;                        // Unique Id of zone
+  char *zoneName;                         // Name of zone
+  uint16_t resourceArrCount;              // Count of resources in array
+  coco_std_zone_resource_t *resourceArr;  // Array of resources
   uint32_t packetId;                      // Used internally by the COCO SDKs
   uint16_t createdByUserId;               // Used internally by the COCO SDKs
   time_t createdTimestamp;                // Used internally by the COCO SDKs
@@ -877,30 +882,30 @@ typedef struct {
 
 // Resource action of a scene and rule
 typedef struct {
-  uint16_t resrcActionId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  uint16_t resrcActionId;   // Unique Id of resource action
+  uint32_t deviceNodeId;    // Unique Id of device
+  char *resourceEui;        // Unique Id of resource
   int32_t capabilityId;     // It will take values from the enum - coco_std_capability_t
-  int32_t cmdId;
-  void *cmdParams;
+  int32_t cmdId;            // command Id
+  void *cmdParams;          // params of command
   uint16_t createdByUserId; // Used internally by the COCO SDKs
   time_t createdTimestamp;  // Used internally by the COCO SDKs
 } coco_std_resrc_action_t;
 
 // Metadata of a scene
 typedef struct {
-  char *sceneMetadata;
-  uint32_t subclusterId;
+  char *sceneMetadata;      // Meta data of scene
+  uint32_t subclusterId;    // Unique Id of sub-cluster
 } coco_std_scene_metadata_t;
 
 // All information about a Scene and its resource actions
 typedef struct {
-  char *networkId;
-  uint16_t sceneId;
-  char *sceneName;
+  char *networkId;                                // Unique Id of cocoNet
+  uint16_t sceneId;                               // Unique Id of scene
+  char *sceneName;                                // Name of scene
   char *metadata;
-  uint16_t resrcActionArrCount;
-  coco_std_resrc_action_t *resrcActionArr;
+  uint16_t resrcActionArrCount;                   // count of resource action array
+  coco_std_resrc_action_t *resrcActionArr;        // Array of resource action
   uint16_t sceneMetadataArrCount;                 // Used internally by the COCO SDKs
   coco_std_scene_metadata_t *sceneMetadataArr;    // Used internally by the COCO SDKs
   uint32_t packetId;                              // Used internally by the COCO SDKs
@@ -923,17 +928,17 @@ typedef enum {
 
 // Resource condition of a rule
 typedef struct {
-  uint16_t ruleId;              // Used internally by the COCO SDK
-  uint16_t ruleResCondId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  uint16_t ruleId;              // Unique Id of rule, Used internally by the COCO SDK
+  uint16_t ruleResCondId;       // rule resource condition Id
+  uint32_t deviceNodeId;        // Unique Id of device
+  char *resourceEui;            // Unique Id of resource
   int32_t capabilityId;         // It will take values from the enum - coco_std_capability_t
   int32_t attributeId;
   int32_t operatorId;           // It will take values from the enum - coco_std_operator_t
   int32_t valueDataTypeId;      // It will take values from the enum - coco_std_data_type_t
   void *currentValue;           // Used internally by the COCO SDKs
   void *ruleValue;
-  uint32_t condDurationMs;
+  uint32_t condDurationMs;      // Duration of condition in mili seconds
   time_t attrLastUpdatedTime;   // Used internally by the COCO SDKs
   uint16_t createdByUserId;     // Used internally by the COCO SDKs
   time_t createdTimestamp;      // Used internally by the COCO SDKs
@@ -953,10 +958,10 @@ typedef enum {
 
 // Schedule condition of a rule
 typedef struct {
-  uint16_t ruleId;                // Used internally by the COCO SDK
-  uint16_t ruleSchCondId;
+  uint16_t ruleId;                // Unique Id of rule, Used internally by the COCO SDK
+  uint16_t ruleSchCondId;         // Unique Id of rule schedule condition
   int32_t ruleSchedTypeId;        // It will take values from the enum - coco_std_rule_sched_type_t
-  time_t ruleStartTime;
+  time_t ruleStartTime;           // Start time to perform rule schedule condition
   time_t ruleExpiryTime;          // expiryTime should have same date as startTime
   time_t lastSatisfiedTime;       // Used internally by the COCO SDKs
   uint16_t createdByUserId;       // Used internally by the COCO SDKs
@@ -965,22 +970,22 @@ typedef struct {
 
 // Scene action of a rule
 typedef struct {
-  uint16_t sceneId;
+  uint16_t sceneId;         // Unique Id of scene
   uint16_t createdByUserId; // Used internally by the COCO SDKs
   time_t createdTimestamp;  // Used internally by the COCO SDKs
 } coco_std_rule_scene_action_t;
 
 // Rule info
 typedef struct {
-  char *networkId;
-  uint16_t ruleId;
-  char *ruleName;
-  uint16_t resrcCondnArrCount;
-  coco_std_rule_resrc_condn_t *resrcCondnArr;
-  uint16_t schedCondnArrCount;
-  coco_std_rule_sched_condn_t *schedCondnArr;
-  uint16_t resrcActionArrCount;
-  coco_std_resrc_action_t *resrcActionArr;
+  char *networkId;                              // Unique Id of cocoNet
+  uint16_t ruleId;                              // Unique Id of rule
+  char *ruleName;                               // Name of rule
+  uint16_t resrcCondnArrCount;                  // Count of resource condition array
+  coco_std_rule_resrc_condn_t *resrcCondnArr;   // Array of resource condition
+  uint16_t schedCondnArrCount;                  // Count of Schedule condition Array
+  coco_std_rule_sched_condn_t *schedCondnArr;   // Schedule condition Array
+  uint16_t resrcActionArrCount;                 // Count of resource action Array
+  coco_std_resrc_action_t *resrcActionArr;      // Array of resource action
   uint16_t sceneActionArrCount;
   coco_std_rule_scene_action_t *sceneActionArr;
   uint32_t packetId;                            // Used internally by the COCO SDKs
@@ -990,66 +995,67 @@ typedef struct {
 
 // Status of resource action of a rule
 typedef struct {
-  uint16_t ruleResActionId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  uint16_t ruleResActionId;       // Unique Id of rule resource action
+  uint32_t deviceNodeId;          // Unique Id of device
+  char *resourceEui;              // Unique Id of resource
   int32_t capabilityId;           // It will take values from the enum - coco_std_capability_t
-  int32_t cmdId;
+  int32_t cmdId;                  // Command Id
   void *cmdParams;
   int32_t status;                 // It will take values from the enum - coco_std_status_code_t
 } coco_std_rule_res_act_status_t;
 
 // Status of resource action of a scene belonging to a rule
 typedef struct {
-  uint16_t sceneResActionId;
-  uint32_t deviceNodeId;
-  char *resourceEui;
+  uint16_t sceneResActionId;        // Scene resource action Id
+  uint32_t deviceNodeId;            // Unique Id of device
+  char *resourceEui;                // Unique Id of resource
   int32_t capabilityId;             // It will take values from the enum - coco_std_capability_t
-  int32_t cmdId;
+  int32_t cmdId;                    // Command Id
   void *cmdParams;
   int32_t status;                   // It will take values from the enum - coco_std_status_code_t
 } coco_std_scene_res_act_status_t;
 
 // Status of scene action of a rule
 typedef struct {
-  uint16_t ruleSceneActionId;
-  uint16_t sceneResActStatusArrCount;
-  coco_std_scene_res_act_status_t *sceneResActStatusArr;
+  uint16_t ruleSceneActionId;                             // Unique Id of rule scene action
+  uint16_t sceneResActStatusArrCount;                     // Count of scene resource action status array
+  coco_std_scene_res_act_status_t *sceneResActStatusArr;  // Array of scene resource action status
 } coco_std_rule_scene_act_status_t;
 
 // Status of rule execution
 typedef struct {
-  char *networkId;
-  uint16_t ruleId;
+  char *networkId;                                      // Unique Id of cocoNet
+  uint16_t ruleId;                                      // Unique Id of rule
   char *ruleName;
-  uint16_t resrcCondnArrCount;
-  coco_std_rule_resrc_condn_t *resrcCondnArr;
-  uint16_t schedCondnArrCount;
-  coco_std_rule_sched_condn_t *schedCondnArr;
-  uint16_t resActStatusArrCount;
-  coco_std_rule_res_act_status_t *resActStatusArr;
-  uint16_t sceneActStatusArrCount;
-  coco_std_rule_scene_act_status_t *sceneActStatusArr;
+  uint16_t resrcCondnArrCount;                          // Count of resource condition array
+  coco_std_rule_resrc_condn_t *resrcCondnArr;           // Array of resource condition
+  uint16_t schedCondnArrCount;                          // Count of schedule condition array
+  coco_std_rule_sched_condn_t *schedCondnArr;           // Array of schedule condition
+  uint16_t resActStatusArrCount;                        // Count of resource action status array
+  coco_std_rule_res_act_status_t *resActStatusArr;      // Array of resource action status
+  uint16_t sceneActStatusArrCount;                      // Count of scene action status array
+  coco_std_rule_scene_act_status_t *sceneActStatusArr;  // Array of scene action status
   uint32_t packetId;                                    // Used internally by the COCO SDKs
 } coco_std_rule_status_t;
 
 // Info of a device
 typedef struct {
-  char *networkId;
-  uint32_t deviceNodeId;
-  char *devicePsn;
-  char *deviceName;
+  char *networkId;            // Unique Id of cocoNet
+  uint32_t deviceNodeId;      // Unique Id of device
+  char *devicePsn;            // Physical address of device
+  char *deviceName;           // Name of device
   char *productName;
-  char *make;             // Manufacture Name
+  char *make;                 // Manufacture Name
   char *model;
-  char *firmwareVersion;
-  char **resourceEuiArr;
-  uint32_t resourceEuiArrCnt;
-  int32_t *protocolIdArr;
-  uint32_t protocolIdArrCnt;
-  int32_t powerSource;    // It will take values from the enum - coco_std_power_source_t
-  int32_t receiverType;   // It will take values from the enum - coco_std_receiver_type_t
-  int32_t isExtendable;
+  char *firmwareVersion;      // Current firmware version of device,
+  char **resourceEuiArr;      // Array of Unique Id's of resource
+  uint32_t resourceEuiArrCnt; // Count of Unique Id's of resource array
+  int32_t *protocolIdArr;     // Array of supported protocols by the device, will take value from coco_std_protocol_id_t
+  uint32_t protocolIdArrCnt;  // Count of Supported protocols
+  int32_t powerSource;        // Type of power source of a device will have values from coco_std_power_source_t
+  int32_t receiverType;       // Type of receiver of a device will have values from coco_std_receiver_type_t
+  int32_t isExtendable;       /* Flag to indicate whether the device is able to connect with other devices (resources).
+                                 If True, other resources can be added else resources can't be added*/
 } coco_std_device_info_t;
 
 // Error codes
@@ -1113,9 +1119,9 @@ typedef enum {
 
 // COCONet management command sent from Client App SDK to Device SDK
 typedef struct {
-  char *networkId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  char *networkId;              // Unique Id of cocoNet
+  uint32_t cmdSenderNodeId;     // sender node Id of command
+  uint32_t cmdSeqNum;           // Sequence number of command
   uint32_t timeoutMs;           // Timeout in ms after which SDK will invoke the respective status
                                 // callback with status as COCO_STD_STATUS_TIMEOUT and ignore status
                                 // received for that particular command. timeoutMs = 0 means infinity.
@@ -1125,33 +1131,34 @@ typedef struct {
 
 // Network command to create a new zone or set name for an existing zone
 typedef struct {
-  uint16_t zoneId;
+  uint16_t zoneId;              // Unique Id of zone
   char *zoneName;
 } coco_std_cmd_set_zone_t;
 
 // Network command to add a resource to a zone
 typedef struct {
-  uint16_t zoneId;
-  uint16_t resourceArrCount;
-  coco_std_zone_resource_t *resourceArr;
+  uint16_t zoneId;                        // Unique Id of zone
+  uint16_t resourceArrCount;              // Count of resources in array
+  coco_std_zone_resource_t *resourceArr;  // Array of resources
 } coco_std_cmd_add_zone_res_t;
 
 // Network command to create a new scene or set name for an existing scene
 typedef struct {
-  uint16_t sceneId;
+  uint16_t sceneId;     // Unique Id of scene
   char *sceneName;
 } coco_std_cmd_set_scene_t;
 
 // Network command to add a resource action to a scene
 typedef struct {
-  uint16_t sceneId;
-  uint16_t resrcActionArrCount;
-  coco_std_resrc_action_t *resrcActionArr;
+  uint16_t sceneId;                         // Unique Id of scene
+  uint16_t resrcActionArrCount;             // Count of Resource action array
+  coco_std_resrc_action_t *resrcActionArr;  // Array of Resource action
 } coco_std_cmd_set_scene_res_act_t;
 
 // COCONet command to save scene settings in network
 typedef coco_std_cmd_set_scene_res_act_t coco_std_cmd_save_scene_settings_t;
 
+// Possible values of COCONet management command error
 typedef enum {
   COCO_STD_CMD_ERR_CODE_MIN = -1,
   COCO_STD_CMD_ERR_BAD_REQUEST = 40000,
@@ -1201,45 +1208,45 @@ typedef struct {
 
 // COCONet management command status sent from Network Management Node to Client App SDK
 typedef struct {
-  char *networkId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  char *networkId;          // Unique Id of cocoNet
+  uint32_t cmdSenderNodeId; // Sender Node Id of command
+  uint32_t cmdSeqNum;       // Sequence Number of command
   int32_t statusCode;       // It will take values from the enum - coco_std_status_code_t
   coco_std_cmd_error_t *error;
 } coco_std_coconet_mgmt_cmd_status_t;
 
 // COCONet command to create a new rule or set name for an existing rule
 typedef struct {
-  uint16_t ruleId;
+  uint16_t ruleId;          // Unique Id of rule
   char *ruleName;
 } coco_std_cmd_set_rule_t;
 
 // COCONet command to add a resource condition to a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t resrcCondnArrCount;
-  coco_std_rule_resrc_condn_t *resrcCondnArr;
+  uint16_t ruleId;                            // Unique Id of rule
+  uint16_t resrcCondnArrCount;                // Count of resource condition array
+  coco_std_rule_resrc_condn_t *resrcCondnArr; // Array of resource condition
 } coco_std_cmd_set_rule_res_cond_t;
 
 // COCONet command to add a schedule condition to a rule
 typedef struct {
-  uint16_t ruleId;
-  coco_std_rule_sched_condn_t *schedCondnArr;
-  uint16_t schedCondnArrCount;
+  uint16_t ruleId;                            // Unique Id of rule
+  coco_std_rule_sched_condn_t *schedCondnArr; // Array of schedule condition
+  uint16_t schedCondnArrCount;                // Count of schedule condition array
 } coco_std_cmd_set_rule_sch_cond_t;
 
 // COCONet command to add a resource action to a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t resrcActionArrCount;
-  coco_std_resrc_action_t *resrcActionArr;
+  uint16_t ruleId;                            // Unique Id of rule
+  uint16_t resrcActionArrCount;               // Count of resource action array
+  coco_std_resrc_action_t *resrcActionArr;    // Array of resource action
 } coco_std_cmd_set_rule_res_act_t;
 
 // COCONet command to add a scene action to a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t sceneActionArrCount;
-  coco_std_rule_scene_action_t *sceneActionArr;
+  uint16_t ruleId;                              // Unique Id of rule
+  uint16_t sceneActionArrCount;                 // Count of scene action array
+  coco_std_rule_scene_action_t *sceneActionArr; // Array of scene action
 } coco_std_cmd_add_rule_scene_act_t;
 
 // COCONet command to save rule settings in network
@@ -1247,115 +1254,116 @@ typedef coco_std_rule_entity_t coco_std_cmd_save_rule_settings_t;
 
 // COCONet command to remove a zone from the COCONet
 typedef struct {
-  uint16_t *zoneIdArr;
-  uint16_t zoneIdArrCnt;
+  uint16_t *zoneIdArr;                          // Array of unique Id's of zone
+  uint16_t zoneIdArrCnt;                        // Count of unique Id's of zone
 } coco_std_cmd_rem_zone_t;
 
 // COCONet command to remove a resource from a zone
 typedef struct {
-  uint16_t zoneId;
-  uint16_t resourceArrCount;
-  coco_std_zone_resource_t *resourceArr;
+  uint16_t zoneId;                              // Unique Id of zone
+  uint16_t resourceArrCount;                    // Count of resources in array
+  coco_std_zone_resource_t *resourceArr;        // Array of resources
 } coco_std_cmd_rem_zone_res_t;
 
 // COCONet command to remove a scene from the network
 typedef struct {
-  uint16_t *sceneIdArr;
-  uint16_t sceneIdArrCnt;
+  uint16_t *sceneIdArr;     // Array of Unique Id's of scene
+  uint16_t sceneIdArrCnt;   // Count of scene Id array
 } coco_std_cmd_rem_scene_t;
 
 // COCONet command to remove a resource action from a scene
 typedef struct {
-  uint16_t sceneId;
-  uint16_t *resrcActionArr;
-  uint16_t resrcActionArrCount;
+  uint16_t sceneId;                   // Unique Id of scene
+  uint16_t *resrcActionArr;           // Array of resource action
+  uint16_t resrcActionArrCount;       // Count of resource action array
 } coco_std_cmd_rem_scene_res_act_t;
 
 // COCONet command to remove a rule from the network
 typedef struct {
-  uint16_t *ruleIdArr;
-  uint16_t ruleIdArrCount;
+  uint16_t *ruleIdArr;                // Array of unique Id's of rule
+  uint16_t ruleIdArrCount;            // Count of unique Id's of rule
 } coco_std_cmd_rem_rule_t;
 
 // COCONet command to remove a resource condition from a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t *ruleResCondIdArr;
-  uint16_t ruleResCondIdArrCount;
+  uint16_t ruleId;                    // Unique Id of rule
+  uint16_t *ruleResCondIdArr;         // Array of rule resource condition Id
+  uint16_t ruleResCondIdArrCount;     // Count of rule resource condition Id Array
 } coco_std_cmd_rem_rule_res_cond_t;
 
 // COCONet command to remove a schedule condition from a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t *ruleSchCondIdArr;
-  uint16_t ruleSchCondIdArrCount;
+  uint16_t ruleId;                    // Unique Id of rule
+  uint16_t *ruleSchCondIdArr;         // Array of rule schedule condition Id
+  uint16_t ruleSchCondIdArrCount;     // Count of rule schedule condition Id
 } coco_std_cmd_rem_rule_sch_cond_t;
 
 // COCONet command to remove a resource action from a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t *resrcActionArr;
-  uint16_t resrcActionArrCount;
+  uint16_t ruleId;                    // Unique Id of rule
+  uint16_t *resrcActionArr;           // Array of resource action
+  uint16_t resrcActionArrCount;       // Count of resource action array
 } coco_std_cmd_rem_rule_res_act_t;
 
 // COCONet command to remove a scene action from a rule
 typedef struct {
-  uint16_t ruleId;
-  uint16_t *sceneIdArr;
-  uint16_t sceneIdArrCount;
+  uint16_t ruleId;                    // Unique Id of rule
+  uint16_t *sceneIdArr;               // Array of Unique Id's of scene
+  uint16_t sceneIdArrCount;           // Count of scene Id's in array
 } coco_std_cmd_rem_rule_scene_act_t;
 
 // COCONet command to move a resource from one zone to another.
 typedef struct {
-  uint16_t oldZoneId;
-  uint16_t newZoneId;
+  uint16_t oldZoneId;                 // Old unique Id of zone
+  uint16_t newZoneId;                 // New unique Id of zone
   uint16_t resourceArrCount;
   coco_std_zone_resource_t *resourceArr;
 } coco_std_cmd_move_zone_res_t;
 
 // COCONet command to assign to template
 typedef struct {
-  uint16_t zoneId;
+  uint16_t zoneId;        // Unique Id of zone
   uint32_t deviceNodeId;
-  char *resTemplateId;
-  char *resourceEui;
+  char *resTemplateId;    // Resource Template Id
+  char *resourceEui;      // Unique Id of resource
 } coco_std_cmd_assign_to_template_t;
 
 // Sent when a zone is deleted
 typedef struct {
-  uint16_t zoneId;
-  uint32_t packetId;
-  char *networkId;
+  uint16_t zoneId;        // Unique Id of zone
+  uint32_t packetId;      // Unique Id of zone delete packet
+  char *networkId;        // Unique Id of cocoNet
 } coco_std_zone_deleted_t;
 
 // Sent when a scene is deleted
 typedef struct {
-  uint16_t sceneId;
-  uint32_t packetId;
-  char *networkId;
+  uint16_t sceneId;       // Unique Id of SCENE
+  uint32_t packetId;      // Unique Id of scene delete packet
+  char *networkId;        // Unique Id of cocoNet
 } coco_std_scene_deleted_t;
 
 // Sent when a rule is deleted
 typedef struct {
-  uint16_t ruleId;
-  uint32_t packetId;
-  char *networkId;
+  uint16_t ruleId;        // Unique Id of rule
+  uint32_t packetId;      // Unique Id of rule delete packet
+  char *networkId;        // Unique Id of cocoNet
 } coco_std_rule_deleted_t;
 
 // Network command to set metadata for an existing scene
 typedef struct {
-  uint16_t sceneId;
+  uint16_t sceneId;       // Unique Id of scene
   char *sceneMetadata;
 } coco_std_cmd_set_scene_metadata_t;
 
 // Sent when a resource is added to a Device
 typedef struct {
-  char *networkId;
+  char *networkId;                  // Unique Id of cocoNet
   uint32_t deviceNodeId;
-  uint32_t resourceArrCount;
-  coco_std_resource_t *resourceArr;
+  uint32_t resourceArrCount;        // Count of resources in array
+  coco_std_resource_t *resourceArr; // Array of resources
 } coco_std_added_resource_t;
 
+// Possible values of node types
 typedef enum {
   COCO_STD_NODE_TYPE_MIN = -1,
   COCO_STD_NODE_TYPE_NETWORK,
@@ -1415,6 +1423,7 @@ typedef struct {
   int32_t channelId;
 } coco_std_media_mgmt_cmd_leave_channel_t;
 
+// Possible values of media channel stream status
 typedef enum {
   COCO_STD_MEDIA_CHANNEL_STATUS_MIN = -1,
   COCO_STD_MEDIA_CHANNEL_STATUS_CREATED,
@@ -1453,17 +1462,17 @@ typedef struct {
 
 // Media management response to available channels
 typedef struct {
-  char *networkId;
+  char *networkId;          // Unique Id of cocoNet
   int32_t numOfChannels;
   coco_std_media_channel_info_t *channelInfoArray;
 } coco_std_media_mgmt_cmd_available_channel_resp_t;
 
 // Media Management command sent between Media Client SDK and MMN
 typedef struct {
-  char *networkId;
+  char *networkId;          // Unique Id of cocoNet
   uint32_t deviceNodeId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  uint32_t cmdSenderNodeId; // Sender node Id of command
+  uint32_t cmdSeqNum;       // Sequence Number of command
   uint32_t timeoutMs;       // Timeout in ms after which SDK will invoke the respective status
                             // callback with status as COCO_STD_STATUS_TIMEOUT and ignore status
                             // received for that particular command. timeoutMs = 0 means infinity.
@@ -1474,10 +1483,10 @@ typedef struct {
 
 // Device command status sent from Device SDK to Client App SDK
 typedef struct {
-  char *networkId;
+  char *networkId;          // Unique Id of cocoNet
   uint32_t deviceNodeId;
-  uint32_t cmdSenderNodeId;
-  uint32_t cmdSeqNum;
+  uint32_t cmdSenderNodeId; // Sender Node Id of command
+  uint32_t cmdSeqNum;       // Sequence Number of command
   int32_t status;           // It will take values from the enum - coco_std_status_code_t
   uint32_t packetId;        // Used internally by the COCO SDKs
   int32_t reDeliver;        /* Only to be used by the app sending the device command status.
@@ -1504,32 +1513,37 @@ typedef enum {
   COCO_STD_MEDIA_MGMT_CMD_UBOUND = 0x7FFFFFFF
 } coco_std_media_mgmt_cmd_id_t;
 
+// Media management command to create transmission of stream
 typedef struct {
-  char* networkId;
+  char* networkId;    // Unique Id of cocoNet
   int32_t channelId;
   char* streamSdp;
   uint16_t channelPort;
 } coco_std_media_mgmt_cmd_create_tx_stream_t;
 
+// Media management command to destroy transmission of stream
 typedef struct {
-  char* networkId;
+  char* networkId;    // Unique Id of cocoNet
   int64_t streamId;
   uint16_t channelPort;
 } coco_std_media_mgmt_cmd_destroy_tx_stream_t;
 
+// Media management command to start receiving stream
 typedef struct {
-  char* networkId;
+  char* networkId;    // Unique Id of cocoNet
   int32_t channelId;
   int64_t streamId;
   uint16_t channelPort;
 } coco_std_media_mgmt_cmd_start_rx_stream_t;
 
+// Media management command to stop receiving stream
 typedef struct {
-  char* networkId;
+  char* networkId;    // Unique Id of cocoNet
   char* streamSdp;
   uint16_t channelPort;
 } coco_std_media_mgmt_cmd_stop_rx_stream_t;
 
+// Media management command to create transmission stream response
 typedef struct {
   int64_t streamId;
 } coco_std_media_mgmt_cmd_create_tx_stream_resp_t;

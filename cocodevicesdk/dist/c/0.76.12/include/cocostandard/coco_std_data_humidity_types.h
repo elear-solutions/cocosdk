@@ -38,6 +38,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of humidity command
 typedef enum {
   COCO_STD_CMD_HUMIDITY_MIN = -1,
   COCO_STD_CMD_FETCH_RELATIVE_HUMIDITY_PCT,
@@ -45,6 +46,7 @@ typedef enum {
   COCO_STD_CMD_HUMIDITY_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_humidity_t;
 
+// Possible values of humidity attribute
 typedef enum {
   COCO_STD_ATTR_HUMIDITY_MIN = -1,
   COCO_STD_ATTR_CURRENT_REL_HUMIDITY_PCT,  // COCO_STD_DATA_TYPE_DOUBLE

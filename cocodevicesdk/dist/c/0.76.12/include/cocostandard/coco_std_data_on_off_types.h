@@ -39,6 +39,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of on off command
 typedef enum {
   COCO_STD_CMD_ON_OFF_MIN = -1,
   COCO_STD_CMD_ON,
@@ -49,6 +50,7 @@ typedef enum {
   COCO_STD_CMD_ON_OFF_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_on_off_t;
 
+// Possible values of on off attribute
 typedef enum {
   COCO_STD_ATTR_ON_OFF_MIN = -1,
   COCO_STD_ATTR_ON_FLAG,            // COCO_STD_DATA_TYPE_BOOLEAN

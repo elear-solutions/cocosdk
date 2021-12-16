@@ -37,6 +37,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of stationary position type command
 typedef enum {
   COCO_STD_CMD_STATIONARY_POSITION_MIN = -1,
   COCO_STD_CMD_STATIONARY_POSITTION_SET_DEVICE_LOC,
@@ -44,6 +45,7 @@ typedef enum {
   COCO_STD_CMD_STATIONARY_POSITION_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_stationary_position_type_t;
 
+// Possible values of stationary position type attribute
 typedef enum {
   COCO_STD_ATTR_STATIONARY_POSITION_MIN = -1,
   COCO_STD_ATTR_STATIONARY_POSITION_BEACON_LOC, // COCO_STD_DATA_TYPE_STRING
@@ -52,6 +54,7 @@ typedef enum {
   COCO_STD_ATTR_STATIONARY_POSITION_UBOUND = 0x7FFF
 } coco_std_attr_stationary_position_type_t;
 
+// Structure of stationary position set device location command
 typedef struct {
   char *locationIdStr;
   char *lotIdStr;
@@ -60,12 +63,13 @@ typedef struct {
   double environmentalFactor;
 } coco_std_cmd_stationary_position_set_device_loc_t;
 
+// Structure of stationary position beacon location attribute
 typedef struct {
   char *locationIdStr;
   char *lotIdStr;
   char *beaconIdStr;
-  double avgRadiusOfBeacon;
-  uint32_t avgTimeDurOfBeacon;
+  double avgRadiusOfBeacon;                        // Average radius of Beacon
+  uint32_t avgTimeDurOfBeacon;                     // Average time of beacon
   double xCoordinate;
   double yCoordinate;
   double errorPrecision;
@@ -73,6 +77,7 @@ typedef struct {
 } coco_std_attr_stationary_position_beacon_loc_t;  //  coco_std_attr_stationary_position_beacon_loc_t struct type cooresponds to
                                                    //  COCO_STD_STRUCT_ATTR_STATIONARY_POSITION_BEACON_LOC
 
+// Structure of stationary position device location attribute
 typedef struct {
   char *locationIdStr;
   char *lotIdStr;

@@ -37,6 +37,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of window cover command
 typedef enum {
   COCO_STD_CMD_WNDW_COVER_MIN = -1,
   COCO_STD_CMD_WNDW_COVER_UP,             //  Window blinds are completely open
@@ -50,9 +51,10 @@ typedef enum {
 
 // Command parameter for COCO_STD_CMD_WNDW_COVER_SET_OPEN_PCT command
 typedef struct {
-  uint8_t openPct;
+  uint8_t openPct;            // window blind open in percentage
 } coco_std_cmd_set_open_pct_t;
 
+// Possible values of window cover attribute
 typedef enum {
   COCO_STD_ATTR_WNDW_COVER_MIN = -1,
   COCO_STD_ATTR_WNDW_COVER_OPEN_PCT,  // COCO_STD_DATA_TYPE_UINT8

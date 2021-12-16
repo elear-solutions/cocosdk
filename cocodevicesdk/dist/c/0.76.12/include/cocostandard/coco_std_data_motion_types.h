@@ -40,6 +40,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of motion command
 typedef enum {
   COCO_STD_CMD_MOTION_MIN = -1,
   COCO_STD_CMD_MOTION_SENSING_ENABLE,
@@ -52,6 +53,7 @@ typedef enum {
   COCO_STD_CMD_MOTION_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_motion_t;
 
+// Possible values of motion attribute
 typedef enum {
   COCO_STD_ATTR_MOTION_MIN = -1,
   COCO_STD_ATTR_MOTION_DETECTED_FLAG,      // COCO_STD_DATA_TYPE_BOOLEAN
@@ -67,8 +69,9 @@ typedef enum {
   COCO_STD_ATTR_MOTION_UBOUND = 0x7FFFFFFF
 } coco_std_attr_motion_t;
 
+// Structure of motion set sensitivity command
 typedef struct {
-  uint8_t sensitivityPct;
+  uint8_t sensitivityPct;         // sensitivity in percentage
 } coco_std_cmd_motion_set_sensitivity_t;
 
  /*************************************************************************************

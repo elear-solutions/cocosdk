@@ -37,6 +37,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of hvac command
 typedef enum {
   COCO_STD_CMD_HVAC_MIN = -1,
   COCO_STD_CMD_HVAC_SET_STATE,
@@ -45,6 +46,7 @@ typedef enum {
   COCO_STD_CMD_HVAC_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_hvac_t;
 
+// Possible values of hvac mode
 typedef enum {
   COCO_STD_HVAC_MODE_MIN = -1,
   COCO_STD_HVAC_MODE_COOL,
@@ -59,6 +61,7 @@ typedef enum {
   COCO_STD_HVAC_MODE_UBOUND = 0x7FFFFFFF
 } coco_std_hvac_mode_t;
 
+// Possible values of hvac fan speed
 typedef enum {
   COCO_STD_HVAC_FAN_SPEED_MIN = -1,
   COCO_STD_HVAC_FAN_SPEED_OFF,
@@ -72,13 +75,14 @@ typedef enum {
 
 // Command parameter for COCO_STD_CMD_HVAC_SET_STATE command
 typedef struct {
-  bool powerOnFlag;
+  bool powerOnFlag;              // Flag to indicate power is on or not
   int32_t mode;                  // Refer enum coco_std_hvac_mode_t
-  uint8_t temperatureCelsius;
-  int32_t fanSpeed;             // Refer enum coco_std_hvac_fan_speed_t
-  bool swingOnFlag;
+  uint8_t temperatureCelsius;    // Temperature in Celsius
+  int32_t fanSpeed;              // Refer enum coco_std_hvac_fan_speed_t
+  bool swingOnFlag;              // Flag to indicate swing is on or not
 } coco_std_cmd_hvac_set_state_t;
 
+// Possible values of hvac attribute
 typedef enum {
   COCO_STD_ATTR_HVAC_MIN = -1,
   COCO_STD_ATTR_HVAC_SUPPORTED_MODES_ARR,  // COCO_STD_DATA_TYPE_UINT8_ARR

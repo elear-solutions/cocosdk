@@ -40,6 +40,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of power level measurement command
 typedef enum {
   COCO_STD_CMD_POWER_LEVEL_MEASUREMENT_MIN = -1,
   COCO_STD_CMD_FETCH_BATTERY_VOLTAGE_MV,
@@ -48,6 +49,7 @@ typedef enum {
   COCO_STD_CMD_POWER_LEVEL_MEASUREMENT_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_power_level_measurement_t;
 
+// Possible values of power level measurement attribute
 typedef enum {
   COCO_STD_ATTR_POWER_LEVEL_MEASUREMENT_MIN = -1,
   COCO_STD_ATTR_BATTERY_VOLTAGE_MV,                 // COCO_STD_DATA_TYPE_UINT16

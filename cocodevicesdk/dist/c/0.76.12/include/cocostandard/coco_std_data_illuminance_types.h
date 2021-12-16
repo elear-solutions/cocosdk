@@ -40,12 +40,14 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of illuminance command
 typedef enum {
   COCO_STD_CMD_ILLUMINANCE_MIN = -1,
   COCO_STD_CMD_ILLUMINANCE_MAX,
   COCO_STD_CMD_ILLUMINANCE_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_illuminance_t;
 
+// Possible values of illuminance attribute
 typedef enum {
   COCO_STD_ATTR_ILLUMINANCE_MIN = -1,
   COCO_STD_ATTR_CURRENT_LUMINANCE_LUX,   // COCO_STD_DATA_TYPE_DOUBLE

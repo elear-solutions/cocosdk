@@ -39,6 +39,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of fluid level command
 typedef enum {
   COCO_STD_CMD_FLUID_LEVEL_MIN = -1,
   COCO_STD_CMD_FLUID_LEVEL_SENSING_ENABLE,
@@ -47,6 +48,7 @@ typedef enum {
   COCO_STD_CMD_FLUID_LEVEL_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_fluid_level_t;
 
+// Possible values of fluid level attribute
 typedef enum {
   COCO_STD_ATTR_FLUID_LEVEL_MIN = -1,
   COCO_STD_ATTR_WATER_OVERFLOW_FLAG,    // COCO_STD_DATA_TYPE_BOOLEAN

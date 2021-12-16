@@ -38,6 +38,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of media stream command
 typedef enum {
   COCO_STD_CMD_MEDIA_STREAM_MIN = -1,
   COCO_STD_CMD_MEDIA_STREAM_START,
@@ -49,6 +50,7 @@ typedef enum {
   COCO_STD_CMD_MEDIA_STREAM_UBOUND = 0x7FFFFFFF,
 } coco_std_cmd_media_stream_t;
 
+// Possible values of media stream attribute
 typedef enum {
   COCO_STD_ATTR_MEDIA_MIN = - 1,
   COCO_STD_ATTR_MEDIA_DESCRIPTOR,                                // media stream description
@@ -74,6 +76,7 @@ typedef enum {
   COCO_STD_ATTR_MEDIA_UBOUND = 0x7FFF,
 } coco_std_attr_media_stream_t;
 
+// Possible values of media stream type
 typedef enum {
   COCO_STD_MEDIA_TRANSPORT_MIN = -1,
   COCO_STD_MEDIA_TRANSPORT_TCP,
@@ -83,6 +86,7 @@ typedef enum {
   COCO_STD_MEDIA_TRANSPORT_UBOUND = 0x7FFF,
 } coco_std_media_transport_type_t;
 
+// Possible values of media session type
 typedef enum {
   COCO_STD_MEDIA_SESSION_MIN = -1,
   COCO_STD_MEDIA_SESSION_BUFFERED,
@@ -91,6 +95,7 @@ typedef enum {
   COCO_STD_MEDIA_SESSION_UBOUND = 0x7FFF,
 } coco_std_media_session_type_t;
 
+// Possible values of media stream status
 typedef enum {
   COCO_STD_MEDIA_STREAM_STATUS_MIN = -1,
   COCO_STD_MEDIA_STREAM_STARTED,
@@ -101,6 +106,7 @@ typedef enum {
   COCO_STD_MEDIA_STREAM_STATUS_UBOUND = 0x7FFFFFFF,
 } coco_std_media_stream_status_t;
 
+// Possible values of media record status
 typedef enum {
   COCO_STD_MEDIA_REC_MIN = -1,
   COCO_STD_MEDIA_REC_STARTED,
@@ -111,6 +117,7 @@ typedef enum {
   COCO_STD_MEDIA_REC_STATUS_UBOUND = 0x7FFFFFFF
 } coco_std_media_record_status_t;
 
+// Possible values of media record mode
 typedef enum {
   COCO_STD_MEDIA_RECORD_MIN = -1,
   COCO_STD_MEDIA_RECORD_MANUAL_STOP,
@@ -120,6 +127,7 @@ typedef enum {
   COCO_STD_MEDIA_RECORD_UNBOUND = 0x7FFFFFFF
 } coco_std_cmd_media_record_mode_t;
 
+// Structure of start media stream command
 typedef struct {
   uint32_t streamId;
   int32_t streamSessionId;                 // SessionId per stream
@@ -130,22 +138,26 @@ typedef struct {
   int32_t streamSessionType;               // stream session type, defined in coco_std_media_session_type_t
 } coco_std_cmd_media_stream_start_t;
 
+// Structure of stop media stream command
 typedef struct {
   uint32_t streamId;
   int32_t streamSessionId;             // -1 to close all stream sessions
 } coco_std_cmd_media_stream_stop_t;
 
+// Structure of start media record command
 typedef struct {
   uint32_t streamIdCount;               // no of streamIds
   uint32_t *streamIdArray;              // Array of streamIds
   char **streamDescriptionArr;
 } coco_std_cmd_media_record_start_t;
 
+// Structure of stop media record command
 typedef struct {
   uint32_t streamIdCount;               // no of streamIds, Recordings on all streams will be stopped if streamIdCount = 0
   uint32_t *streamIdArray;              // Array of streamIds
 } coco_std_cmd_media_record_stop_t;
 
+// Structure of media record config
 typedef struct {
   int32_t recordMode;               // one of the values from coco_std_cmd_media_record_mode_t
   uint32_t size;                    // in MB

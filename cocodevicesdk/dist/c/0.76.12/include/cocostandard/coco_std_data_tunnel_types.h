@@ -41,6 +41,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Structure of open tunnel command
 typedef struct {
   uint16_t channelPort;
   int32_t tunnelProtocol;  // Use coco_std_tunnel_protocol_t
@@ -50,14 +51,17 @@ typedef struct {
   int32_t sessionId;       // User defined session Id
 } coco_std_cmd_tunnel_open_t;
 
+// Structure of tunnel rtsp parameters
 typedef struct {
   uint16_t port;         // Ignored if port = 0
 } coco_std_tunnel_rtsp_params_t;
 
+// Structure of close tunnel command
 typedef struct {
   uint16_t channelPort;
 } coco_std_cmd_tunnel_close_t;
 
+// Possible values of tunnel command
 typedef enum {
   COCO_STD_CMD_TUNNEL_MIN = -1,
   COCO_STD_CMD_TUNNEL_OPEN,
@@ -66,6 +70,7 @@ typedef enum {
   COCO_STD_CMD_TUNNEL_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_tunnel_t;
 
+// Possible values of tunnel attribute
 typedef enum {
   COCO_STD_ATTR_TUNNEL_MIN = -1,
   COCO_STD_ATTR_TUNNEL_SUPPORTED_TRANSPORT_TYPE_COUNT,   // supported transport type count

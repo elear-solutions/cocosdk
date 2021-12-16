@@ -39,6 +39,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of storage control command
 typedef enum {
   COCO_STD_CMD_STORAGE_CONTROL_MIN = -1,
   COCO_STD_CMD_STORAGE_UPLOAD,
@@ -47,6 +48,7 @@ typedef enum {
   COCO_STD_CMD_STORAGE_CONTROL_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_storage_control_t;
 
+// Possible values of storage control attribute
 typedef enum {
   COCO_STD_ATTR_STORAGE_CONTROL_MIN = -1,
   COCO_STD_ATTR_STORAGE_CONTENT_COUNT,                   // COCO_STD_DATA_TYPE_UINT64
@@ -72,6 +74,7 @@ typedef enum {
   COCO_STD_ATTR_STORAGE_CONTROL_UBOUND = 0x7FFF
 } coco_std_attr_storage_control_t;
 
+// Structure of storage upload command
 typedef struct {
   int32_t contentType;                    // one of the values from coco_std_storage_content_type_t
   int32_t uploadTriggerType;              // one of the values from coco_std_storage_upload_trigger_type_t
@@ -87,6 +90,7 @@ typedef struct {
   time_t createdTimestamp;
 } coco_std_cmd_storage_upload_t;
 
+// Structure of storage download command
 typedef struct {
   uint64_t contentId;
   uint16_t channelPort;

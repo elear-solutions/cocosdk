@@ -39,6 +39,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of contact sensing command
 typedef enum {
   COCO_STD_CMD_CONTACT_SENSING_MIN = -1,
   COCO_STD_CMD_CONTACT_SENSING_ENABLE,
@@ -47,6 +48,7 @@ typedef enum {
   COCO_STD_CMD_CONTACT_SENSING_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_contact_sensing_t;
 
+// Possible values of contact sensing attribute
 typedef enum {
   COCO_STD_ATTR_CONTACT_SENSING_MIN = -1,
   COCO_STD_ATTR_CONTACT_1_OPEN_FLAG,   // COCO_STD_DATA_TYPE_BOOLEAN

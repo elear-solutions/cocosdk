@@ -38,12 +38,14 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Structure of snapshot image command
 typedef struct {
   uint32_t channelPort;            // channel port for snapshot, if set to 0 it's ignored.
   uint16_t pixelHeight;            // 0 for default height
   uint16_t pixelWidth;             // 0 for default width
 } coco_std_cmd_snapshot_img_t;
 
+// Structure of snapshot command
 typedef enum {
   COCO_STD_CMD_SNAPSHOT_MIN = -1,
   COCO_STD_CMD_SNAPSHOT_IMAGE,
@@ -51,6 +53,7 @@ typedef enum {
   COCO_STD_CMD_SNAPSHOT_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_snapshot_t;
 
+// Possible values of snapshot attribute
 typedef enum {
   COCO_STD_ATTR_SNAPSHOT_MIN = -1,
   COCO_STD_ATTR_SNAPSHOT_IMG_SUPPORT_RESOLUTION_HEIGHT_ARR, // COCO_STD_DATA_TYPE_UINT16_ARR

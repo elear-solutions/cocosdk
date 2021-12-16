@@ -38,6 +38,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of motor command
 typedef enum {
   COCO_STD_CMD_MOTOR_MIN = -1,
   COCO_STD_CMD_MOTOR_PAN,
@@ -51,6 +52,7 @@ typedef enum {
   COCO_STD_CMD_MOTOR_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_motor_t;
 
+// Possible values of motor attribute
 typedef enum {
   COCO_STD_ATTR_MOTOR_MIN = -1,
   COCO_STD_ATTR_MOTOR_PAN_DOF,                   // Max degrees from initial
@@ -66,6 +68,7 @@ typedef enum {
   COCO_STD_ATTR_MOTOR_UBOUND = 0x7FFFFFFF
 } coco_std_attr_motor_ctrl_t;
 
+// Possible values of motor pan direction
 typedef enum {
   COCO_STD_MOTOR_PAN_DIREC_MIN = -1,
   COCO_STD_MOTOR_PAN_DIREC_LEFT,
@@ -74,6 +77,7 @@ typedef enum {
   COCO_STD_MOTOR_PAN_DIREC_UBOUND = 0x7FFFFFFF
 } coco_std_motor_pan_direction_t;
 
+// Possible values of motor tilt direction
 typedef enum {
   COCO_STD_MOTOR_TILT_DIREC_MIN = -1,
   COCO_STD_MOTOR_TILT_DIREC_UP,
@@ -82,12 +86,14 @@ typedef enum {
   COCO_STD_MOTOR_TILT_DIREC_UBOUND = 0x7FFFFFFF
 } coco_std_motor_tilt_direction_t;
 
+// Structure of motor pan command
 typedef struct {
   int32_t direction;                             // one of the value from coco_std_motor_pan_direction_t
   uint16_t degree;                               // 0 to 360 degrees
   int32_t speed;                                 // 0 to 1000 and -1 for default speed
 } coco_std_cmd_motor_pan_t;
 
+// Structure of motor tilt command
 typedef struct {
   int32_t direction;                             // one of the value from coco_std_motor_tilt_direction_t
   uint16_t degree;                               // 0 to 360 degrees

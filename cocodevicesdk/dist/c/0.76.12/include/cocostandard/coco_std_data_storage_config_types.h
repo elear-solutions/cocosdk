@@ -37,6 +37,7 @@
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
+// Possible values of storage config command
 typedef enum {
   COCO_STD_CMD_STORAGE_CONFIG_MIN = -1,
   COCO_STD_CMD_STORAGE_CONFIG,
@@ -44,6 +45,7 @@ typedef enum {
   COCO_STD_CMD_STORAGE_CONFIG_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_id_storage_config_t;
 
+// Possible values of storage config attribute
 typedef enum {
   COCO_STD_ATTR_STORAGE_CONFIG_MIN = -1,
   COCO_STD_ATTR_STORAGE_STORAGE_NODE, // COCO_STD_DATA_TYPE_JSON_STRING
@@ -51,9 +53,10 @@ typedef enum {
   COCO_STD_ATTR_STORAGE_CONFIG_UBOUND = 0x7FFF
 } coco_std_attr_storage_config_t;
 
+// Structure of storage config command
 typedef struct {
   uint32_t storageNodeId;
-  char *resourceEui;
+  char *resourceEui;          // Unique Id of resource
 } coco_std_cmd_storage_config_t;
 
  /*************************************************************************************

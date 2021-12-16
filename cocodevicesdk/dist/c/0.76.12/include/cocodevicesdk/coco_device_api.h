@@ -59,20 +59,20 @@
 #endif
 
 /* Default connectivity timer values */
-#define COCO_DEVICE_DEFAULT_FAST_RETRY_DURATION             20
-#define COCO_DEVICE_DEFAULT_BACKGROUND_MAX_RETRY_PERIOD     30
-#define COCO_DEVICE_DEFAULT_FOREGROUND_MAX_RETRY_PERIOD     30
-#define COCO_DEVICE_DEFAULT_KEEP_ALIVE_TIMEOUT              5
-#define COCO_DEVICE_DEFAULT_KEEP_ALIVE_INTERVAL             10
-#define COCO_DEVICE_DEFAULT_DEVICE_BUSY_ST_TIMEOUT          60000
+#define COCO_DEVICE_DEFAULT_FAST_RETRY_DURATION             20      // fast Retry Duration of SDK Nodes in seconds to connect with other nodes
+#define COCO_DEVICE_DEFAULT_BACKGROUND_MAX_RETRY_PERIOD     30      // background Maximum Retry Period of SDK Nodes in seconds to connect with other nodes
+#define COCO_DEVICE_DEFAULT_FOREGROUND_MAX_RETRY_PERIOD     30      // Foreground Maximum Retry Period of SDK Nodes in seconds to connect with other nodes
+#define COCO_DEVICE_DEFAULT_KEEP_ALIVE_TIMEOUT              5       // Time in seconds for which Node will wait for the response of keep alive packet
+#define COCO_DEVICE_DEFAULT_KEEP_ALIVE_INTERVAL             10      // SDK nodes will send a keep alive packet to other connected nodes in this interval
+#define COCO_DEVICE_DEFAULT_DEVICE_BUSY_ST_TIMEOUT          60000   // SDK nodes default maximum time to be in a busy state to perform an operation
 
 /*************************************************************************************
  *                          GLOBAL TYPEDEFS                                          *
  *************************************************************************************/
 /* Device firmware update details */
 typedef struct {
-  char *version;
-  char *filePath;
+  char *version;      // Current firmware version
+  char *filePath;     // Path of firmware file
 } coco_device_fw_update_details_t;
 
 typedef struct {
@@ -96,10 +96,10 @@ typedef struct {
 } coco_device_channel_handle_t;
 
 typedef  struct {
-  uint32_t cmdSenderNodeId;
-  char *resourceEui;
+  uint32_t cmdSenderNodeId;                       // Sender node Id of command
+  char *resourceEui;                              // Unique Id of resource
   uint32_t streamId;
-  int32_t streamSessionId;
+  int32_t streamSessionId;                        // SessionId per stream
   int32_t streamSessionType;                      // stream session type, defined in coco_std_media_session_type_t
   uint32_t channelHandleCount;
   coco_device_channel_handle_t **channelHandleArr;
@@ -110,7 +110,7 @@ typedef  struct {
 typedef  struct {
   int32_t contentType;                  // Stream/File/Attribute
   int32_t uploadTriggerType;            // user or attribute
-  coco_std_source_uri_t sourceUri;
+  coco_std_source_uri_t sourceUri;      // Structure of coco_std_source_uri_t
   coco_std_upload_triggered_uri_t uploadTriggeredUri;
   uint16_t channelHandleCount;
   coco_device_channel_handle_t **channelHandleArr;
@@ -120,10 +120,10 @@ typedef  struct {
 typedef  struct {
   int32_t contentType;                  // stream/File
   int32_t uploadTriggerType;            // user or attribute
-  coco_std_source_uri_t sourceUri;
+  coco_std_source_uri_t sourceUri;      // Structure of coco_std_source_uri_t
   coco_std_upload_triggered_uri_t uploadTriggeredUri;
   uint32_t storageNodeId;
-  char *resourceEui;                    // Destination storage resource EUI
+  char *resourceEui;                    // Unique Id of resource, Destination storage resource EUI
   bool appendFlag;                      // <overwrite / append>
   uint32_t offset;                      // ignored for streams
   uint32_t size;                        // ignored for streams
@@ -131,7 +131,7 @@ typedef  struct {
   uint16_t channelCount;
   uint16_t *channelPortArr;
   char **channelDescriptionArr;
-  uint32_t *channelRxBuffSizeArr;
+  uint32_t *channelRxBuffSizeArr;       // Array of channel receiver buffer size
   uint32_t timeoutMs;                   // Timeout in ms after which SDK will invoke the storage
                                         // upload status callback with status as
                                         // COCO_DEVICE_STORAGE_UPLOAD_FAILED
@@ -149,71 +149,244 @@ typedef void (*coco_device_capture_snapshot_request_status_cb_t)(const char *fil
 
 typedef  struct {
   uint32_t nodeId;
-  char *resourceEui;
+  char *resourceEui;            // Unique Id of resource
   uint16_t pixelHeight;
   uint16_t pixelWidth;
   coco_device_capture_snapshot_request_status_cb_t snapshotReqestStatusCb;
   const char *downloadPath;
-  uint32_t timeoutMs;
+  uint32_t timeoutMs;           // Timeout in ms after which deviceSdk will invoke the respective status
+                                // callback with status as COCO_STD_STATUS_TIMEOUT and ignore status
+                                // received for that particular command. timeoutMs = 0 means infinity.
 } coco_device_capture_snapshot_request_params_t;
 
-/* Callback to receive resource/device command */
+/* Callback to receive resource command */
+/// A callback that provides the resource command to the application
+/** @param streamHandle    resource command pointer
+ */
 typedef void (* coco_device_resource_cmd_cb_t)(coco_std_resource_cmd_t *resourceCmd);
+
+/* Callback to receive device command */
+/// A callback that provides the device command to the application
+/** @param streamHandle    Device command pointer
+ */
 typedef void (* coco_device_mgmt_cmd_cb_t)(coco_std_device_cmd_t *deviceCmd);
+
 /* Callback to receive add resource execution status */
+/// A callback that provides the add resource status to the application
+/** @param status   status of add resource. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the dd resource
+ */
 typedef void (* coco_device_add_resource_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive remove resource execution status */
+/// A callback that provides the remove resource status to the application
+/** @param status   status of remove resource. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the remove resource
+ */
 typedef void (* coco_device_remove_resource_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive send device management command status execution status */
+/// A callback that provides the device command status to the application
+/** @param status   status of device command. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed to the device command
+ */
 typedef void (* coco_device_mgmt_cmd_status_update_cb_t)(int32_t status, void *context);
+
 /* Callback to receive transmission status of resource command status */
+/// A callback that provides the resource command status to the application
+/** @param status   status of resource command. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the resource command
+ */
 typedef void (* coco_device_resource_cmd_status_update_cb_t)(int32_t status, void *context);
+
 /* Callback to receive send info request execution status */
+/// A callback that provides the Info request status to the application
+/** @param status   status of Info request. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the info request
+ */
 typedef void (* coco_device_info_request_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive info response */
+/// A callback that provides the Info response to the application
+/** @param infoResponse   pointer to the info response
+ *  @param context        Context passed in the info response
+ */
 typedef void (* coco_device_info_response_cb_t)(coco_std_info_response_t *infoResponse, void *context);
+
 /* Callback to receive send info response execution status */
+/// A callback that provides the Info response status to the application
+/** @param status   status of Info response. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the info response
+ */
 typedef void (* coco_device_info_response_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive info request */
+/// A callback that provides the Info request to the application
+/** @param infoRequest    pointer to the info request
+ *  @param context        Context passed in the info request
+ */
 typedef void (* coco_device_info_request_cb_t)(coco_std_info_request_t *infoRequest);
-/* Callback to receive send advertise/show message execution status */
+
+/* Callback to receive send advertise resource execution status */
+/// A callback that provides the status of advertise resource api to the application
+/** @param status   status of advertise resource. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the advertise resource
+ */
 typedef void (* coco_device_advertise_resource_status_cb_t)(int32_t status, void *context);
+
+/* Callback to receive send show message execution status */
+/// A callback that provides the show message status to the application
+/** @param status   status of show message. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the show message
+ */
 typedef void (* coco_device_show_message_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive attribute update status */
+/// A callback that provides the attribute update status to the application
+/** @param status   status of attribute update. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the attribute update
+ */
 typedef void (* coco_device_attribute_update_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive cocoNet connection status. Status will takes values from the enum
    coco_device_connect_status_ */
+/// A callback that provides the device connection status to the application
+/** @param status   status of device connection. status takes values from the enum
+ *                  coco_device_connect_status_t. Possible status are
+ *                  COCO_DEVICE_CONNECTING,
+ *                  COCO_DEVICE_CONNECTED,
+ *                  COCO_DEVICE_CONNECTED,
+ *                  COCO_DEVICE_NETWORK_BLOCKED
+ */
 typedef void (*coco_device_connect_status_cb_t)(int32_t status);
+
 /* Callbacks to receive tunnel status */
+/// A callback that provides the tunnel status to the application
+/** @param tunnelHandle   tunnel handle
+ *  @param sessionId      session Id
+ *  @param tunnelStatus   Status of tunnel. Status takes values from the enum cp_tunnel_status_t.
+ *  @param listeningPort  Listening port to the tunnel
+ */
 typedef void (*coco_device_tunnel_status_cb_t)(coco_device_tunnel_handle_t *tunnelHandle,
                                                uint32_t sessionId, int32_t tunnelStatus,
                                                uint16_t listeningPort);
+
 /* Callback to receive firmware update details */
+/// A callback that provides the firmware update to the application
+/** @param fwUpdateDetails    Firmware update detail pointer
+ */
 typedef void (* coco_device_firmware_update_cb_t)(coco_device_fw_update_details_t *fwUpdateDetails);
+
 /* Callback to receive capability update status */
+/// A callback that provides the capability update status to the application
+/** @param status   status of capability update. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ *  @param context  Context passed in the capability update
+ */
 typedef void (* coco_device_capability_update_status_cb_t)(int32_t status, void *context);
+
 /* Callback to receive scene execute command */
+/// A callback that provides the scene execution commands to the application
+/** @param resourceCmdArr     Resource command array pointer
+ *  @param resourceCmdArrCnt  Resource command array count
+ */
 typedef void (* coco_device_scene_execute_cb_t)(coco_std_resource_cmd_t *resourceCmdArr,
                                                 int resourceCmdArrCnt);
 
+/* Callback to receive tunnel parameters */
+/// A callback that provides the tunnel parameters to the application
+/** @param resourceCmdInfo   Resource command info pointer
+ *  @param status            status of tunnel operation. status takes values from the enum
+ *                           coco_std_status_code_t. Possible status are
+ *                           COCO_STD_STATUS_SUCCESS
+ *                           COCO_STD_STATUS_FAILURE
+ *  @return coco_device_tunnel_params_t  tunnel parameter pointer
+ */
 typedef coco_device_tunnel_params_t *(* coco_device_get_tunnel_params_cb_t)(coco_std_resource_cmd_t *resourceCmdInfo,
                                                                             coco_std_status_code_t *status);
 
+/* Callback to receive media stream accept */
+/// A callback invoked to the application when stream is accepted.
+/** @param resourceUri              Unique resource Id
+ *  @param channelCount             count of channels
+ *  @param portArray                Array of ports
+ *  @param streamTransportTypeArr   Array of stream transport type
+ *  @param streamSessionType        stream session type, defined in coco_std_media_session_type_t
+ *  @param streamDescription        stream description
+ *  @param streamContext            Context passed for stream handle in the accept callback
+ *  @param status                   status of media stream accept operation. status takes values from the enum
+ *                                  coco_std_status_code_t. Possible status are
+ *                                  COCO_STD_STATUS_SUCCESS
+ *                                  COCO_STD_STATUS_FAILURE
+ *  @return bool
+ */
 typedef bool (*coco_device_media_stream_accept_cb_t)(char *resourceUri, uint16_t channelCount, uint16_t *portArray,
                                                      int32_t *streamTransportTypeArr, int32_t streamSessionType,
                                                      char *streamDescription, void **streamContext,
                                                      coco_std_status_code_t *status);
 
+/* Callback to receive media stream status */
+/// A callback that provides the media stream status to the application
+/** @param handle          Stream handle pointer
+ *  @param channelHandle   Stream channel handle pointer
+ *  @param status          Stream channel connection status
+ *  @param streamContext   Context passed for stream handle in the stream open API or accept callback
+ *  @param channelContext  Context passed for stream channel in set channel receive callback API
+ */
 typedef void (*coco_device_media_stream_status_cb_t)(coco_device_media_stream_handle_t *handle,
                                                      coco_device_channel_handle_t *channelHandle,
                                                      int32_t status, void *streamContext,
                                                      void *channelContext);
 
+/* Callback to receive media stream receive */
+/// A callback invoked to the application when stream is received.
+/** @param handle          Stream handle pointer
+ *  @param channelHandle   Stream channel handle pointer
+ *  @param data            Pointer to the received data from the stream channel to the app
+ *  @param len             Length of the received data
+ *  @param streamContext   Context passed for stream handle in the stream open API or accept callback
+ *  @param channelContext  Context passed for stream channel in set channel receive callback API
+ */
 typedef void (*coco_device_media_stream_receive_cb_t)(coco_device_media_stream_handle_t *handle,
                                                       coco_device_channel_handle_t *channelHandle,
                                                       const void *data, size_t len,
                                                       void *streamContext, void *channelContext);
 
+/* Callback to receive active tunnel clients */
+/// A callback that provides the active tunnel clients to the application
+/** @param activeTunnelClientArr    pointer to the array of active tunnel clients
+ *  @param activeTunnelClientCount  count of active tunnel clients
+ *  @param requestContext           User defined context pointer
+ */
 typedef void (*coco_device_active_tunnel_clients_cb_t)(uint32_t *activeTunnelClientArr,
                                                        uint16_t activeTunnelClientCount,
                                                        void *requestContext);
@@ -231,19 +404,53 @@ typedef void (*coco_device_ap_listen_status_cb_t)(int32_t status, void *context)
 typedef void (*coco_device_ap_disconnect_status_cb_t)(int32_t status, void *context);
 
 /* Callback to receive remove device status */
+/// A callback that provides the remove device status to the application
+/** @param status   status of remove status. status takes values from the enum
+ *                  coco_std_status_code_t. Possible status are
+ *                  COCO_STD_STATUS_SUCCESS
+ *                  COCO_STD_STATUS_FAILURE
+ */
 typedef void (*coco_device_remove_status_cb_t)(int32_t status);
 
 /* Callback to send remove device request */
+/// A callback that provides the remove device request to the application
+/** @param  factoryResetFlag   Flag to indicate whether the device needs to Factory reset or not.
+ *  @return int32_t            success return 0
+ *                             failure return -1
+ */
 typedef int32_t (*coco_device_remove_request_cb_t)(int32_t factoryResetFlag);
 
+/* Callback to receive storage upload accept*/
+/// A callback invoked to an application when uploaded data is accepted by storage node
+/** @param storageUploadData    Storage upload data pointer
+ *  @param resourceEui          Unique Id of resource
+ *  @param uploadContext        Context passed for storage upload accept
+ */
 typedef bool (*coco_device_storage_upload_accept_cb_t)(coco_std_cmd_storage_upload_t *storageUploadData,
                                                        char *resourceEui, void **uploadContext);
 
+/* Callback to receive storage upload status*/
+/// A callback that provides the storage upload status to the application
+/** @param uploadHandle    Storage Upload handle
+ *  @param channelHandle   channel handle
+ *  @param status          Status of storage upload. Status takes values from the enum coco_device_storage_upload_status_t.
+ *  @param uploadContext   Context passed for storage upload handle
+ *  @param channelContext  Context passed for channel
+ */
 typedef void (*coco_device_storage_upload_status_cb_t)(coco_device_storage_upload_handle_t *uploadHandle,
                                                        coco_device_channel_handle_t *channelHandle,
                                                        int32_t status, void *uploadContext,
                                                        void *channelContext);
 
+/* Callback to receive storage upload receive */
+/// A callback that provides uploaded storage data to application
+/** @param uploadHandle    Storage upload handle pointer
+ *  @param channelHandle   Storage upload channel handle pointer
+ *  @param data            Pointer to the received data from the stream channel to the app
+ *  @param len             Length of the received data
+ *  @param uploadContext   Context passed for storage upload handle
+ *  @param channelContext  Context passed for storage upload channel
+ */
 typedef void (*coco_device_storage_upload_receive_cb_t)(coco_device_storage_upload_handle_t *uploadHandle,
                                                         coco_device_channel_handle_t *channelHandle,
                                                         const void *data, size_t len,
@@ -331,19 +538,21 @@ typedef struct {
 
 /* cocoDeviceSdk init data structure */
 typedef struct {
-  char *cwdPath;                               // Mandatory
-  void *encryptionKey;
-  uint32_t encryptionKeyLen;
-  char *configFilePath;                        // Mandatory
-  char *downloadPath;                          // Mandatory
-  char *tempPath;
-  char *firmwareVersion;                       // Mandatory
-  int32_t *protocolIdArr;                      // These value are to be populated internally and inputs will be ignored even if provided
-  uint32_t protocolIdArrCnt;                   // These value are to be populated internally and inputs will be ignored even if provided
-  int32_t isExtendable;                        // These value are to be populated internally and inputs will be ignored even if provided
-  int32_t powerSource;                         // These value are to be populated internally and inputs will be ignored even if provided
-  int32_t receiverType;                        // These value are to be populated internally and inputs will be ignored even if provided
-  int32_t skipSSLVerification;
+  char *cwdPath;                               // current working directory path, Mandatory
+  void *encryptionKey;                         // To be used for Internal purpose
+  uint32_t encryptionKeyLen;                   // To be used for Internal purpose
+  char *configFilePath;                        // configuration file path, Mandatory
+  char *downloadPath;                          // Path where all the device files will be downloaded, Mandatory
+  char *tempPath;                              // Temporary folder path
+  char *firmwareVersion;                       // Current firmware version of device, Mandatory
+  int32_t *protocolIdArr;                      // Supported protocols by the device, will take value from coco_std_protocol_id_t
+  uint32_t protocolIdArrCnt;                   // Count of Supported protocols
+  int32_t isExtendable;                        /* Flag to indicate whether the device is able to connect with other devices (resources).
+                                                  If True, other resources can be added else resources can't be added*/
+  int32_t powerSource;                         // Type of power source of a device will have values from coco_std_power_source_t
+  int32_t receiverType;                        // Type of receiver of a device will have values from coco_std_receiver_type_t
+  int32_t skipSSLVerification;                 /* Flag to indicate SSL Verification.
+                                                  if skipSSLVerification is false, device needs to do SSL verification, else not required */
   char *canonicalHostNameList;                 // Set canonical host name(s); its optional to use
   uint16_t clusterPort;                        /* Physical port to be used for cluster communication.
                                                   Application should provide an available port.
@@ -441,16 +650,16 @@ typedef enum {
 
 /* Structure used in fetch attribute API */
 typedef struct {
-  char *resourceEui;
-  int32_t capabilityId;
+  char *resourceEui;              // Unique Id of resource
+  int32_t capabilityId;           // It will take values from the enum - coco_std_capability_t
   int32_t attributeId;
 } coco_device_fetch_attr_param_t;
 
 // Possible values which matchType parameter in API coco_device_resource_fetch() can accept
 typedef enum {
   COCO_DEVICE_MATCH_TYPE_MIN = -1,
-  COCO_DEVICE_MATCH_TYPE_EQUALS,
-  COCO_DEVICE_MATCH_TYPE_CONTAINS,
+  COCO_DEVICE_MATCH_TYPE_EQUALS,      // Matches exact parameters
+  COCO_DEVICE_MATCH_TYPE_CONTAINS,    // Contains matched parameters
   COCO_DEVICE_MATCH_TYPE_MAX,
   COCO_DEVICE_MATCH_TYPE_UBOUND = 0x7FFFFFFF
 } coco_device_match_type_t;
@@ -532,7 +741,8 @@ int32_t coco_device_init(coco_device_init_params_t *params);
 
 /********************************************//**
  * @brief   Updates resource capability info
- * @details Updates resource capability info
+ * @details This handler will update resource capability info. Send the updated resource
+ *          capability info to the other nodes
  * @param   resourceAttribute: Resource capability info (can be freed after function returns)
  * @param   context          : User defined context pointer. It will be returned in the
  *                             attributeUpdateCb.
@@ -543,7 +753,8 @@ int32_t coco_device_resource_capability_update(coco_std_resource_capability_info
 
 /********************************************//**
  * @brief   Updates resource attribute info
- * @details Updates resource attribute info
+ * @details This handler will update resource attribute info. Send the updated resource
+ *          attribute info to the other nodes
  * @param   resourceAttribute: Resource attribute info (can be freed after function returns)
  * @param   context          : User defined context pointer. It will be returned in the
  *                             attributeUpdateCb.
@@ -554,7 +765,8 @@ int32_t coco_device_resource_attribute_update(coco_std_resource_attribute_info_t
 
 /********************************************//**
  * @brief   Updates resource attribute info in an array
- * @details Updates resource attribute info in the form of an array
+ * @details This handler will update resource attribute info in the form of an array.
+ *          Send all the updated resource attribute info to the other nodes.
  * @param   resourceAttribute: Resource attribute info (can be freed after function returns)
  * @param   attributeCount   : Number of attributes to update
  * @param   context          : User defined context pointer. It will be returned in the
@@ -596,7 +808,8 @@ void coco_device_perror(const char *str);
 
 /********************************************//**
  * @brief   Adds given set resources to the device and updates node info
- * @details Adds given set resources to the device and updates node info.
+ * @details This handler will add a given set of resources to the device and updates node info.
+ *          Send added resource info to the other nodes.
  * @param   resourceArr   : Pointer to array of resource info structure.
  * @param   resourceArrCnt: Count of resource info structure array.
  * @param   cmdSeqNum: Add resource command sequence number.
@@ -610,7 +823,7 @@ int32_t coco_device_add_resource(coco_std_resource_t *resourceArr, uint32_t reso
 
 /********************************************//**
  * @brief   Sends resource advertisement to client apps
- * @details Sends resource advertisement to client apps.
+ * @details This handler will send resource advertisement to client apps.
  * @param   resourceAd: Pointer to resource advertise structure.
  * @param   context: User defined context pointer.
  * @return  int : 0 on success , -1 on failure
@@ -619,7 +832,7 @@ int32_t coco_device_advertise_resource(coco_std_resource_advertise_t *resourceAd
 
 /********************************************//**
  * @brief   Sends message to client apps
- * @details Sends message to client apps.
+ * @details This handler will sends message to client apps.
  * @param   message: Pointer to show message structure.
  * @param   context: User defined context pointer.
  * @return  int : 0 on success , -1 on failure
@@ -628,7 +841,7 @@ int32_t coco_device_show_message(coco_std_message_t *message, void *context);
 
 /********************************************//**
  * @brief   Sends info request to client apps
- * @details Sends info request to client apps.
+ * @details This handler will send info request to client apps.
  * @param   infoRequest   : Pointer to info request structure.
  * @param   context       : User defined context pointer to be returned in infoReqStatusCb and
  *                          infoResponseCb callback.
@@ -638,7 +851,7 @@ int32_t coco_device_info_request(coco_std_info_request_t *infoRequest, void *con
 
 /********************************************//**
  * @brief   Sends info response to client apps
- * @details Sends info response to client apps.
+ * @details This handler will send info response to client apps.
  * @param   infoRequest   : Pointer to info response structure.
  * @param   context       : User defined context pointer to be returned in infoRespStatusCb.
  * @return  int           : 0 on success , -1 on failure
@@ -647,7 +860,7 @@ int64_t coco_device_info_response(coco_std_info_response_t *infoResponse, void *
 
 /********************************************//**
  * @brief   Sends device command status to client apps
- * @details Sends device command status to client apps.
+ * @details This handler will send device command status to client apps.
  * @param   deviceCmdStatus: Pointer to device command status structure.
  * @param   context: User defined context pointer.
  * @return  int : 0 on success , -1 on failure

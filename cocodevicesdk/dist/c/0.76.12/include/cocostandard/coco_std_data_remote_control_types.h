@@ -37,6 +37,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of remote command
 typedef enum {
   COCO_STD_CMD_REMOTE_MIN = -1,
   COCO_STD_CMD_REMOTE_TEST_COMMAND,
@@ -57,6 +58,7 @@ typedef enum {
   COCO_STD_CMD_REMOTE_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_remote_t;
 
+// Possible values of remote categories
 typedef enum {
   COCO_STD_REMOTE_CATEGORY_MIN = -1,
   COCO_STD_REMOTE_CATEGORY_AIR_CONDITIONER,
@@ -66,6 +68,7 @@ typedef enum {
   COCO_STD_REMOTE_CATEGORY_UBOUND = 0x7FFFFFFF
 } coco_std_remote_categories_t;
 
+// Possible values of remote program mode
 typedef enum {
   COCO_STD_REMOTE_PROG_MODE_MIN = -1,
   COCO_STD_REMOTE_PROG_MODE_PRESET_MODE,
@@ -122,8 +125,8 @@ typedef struct {
 
 // Command response structure for COCO_STD_CMD_REMOTE_SET_SEARCH_MODE
 typedef struct {
-  uint16_t numOfPairingCodes;
-  uint16_t *pairingCodesArr;
+  uint16_t numOfPairingCodes;       // Count of paring codes
+  uint16_t *pairingCodesArr;        // Array of pairing codes
 } coco_std_cmd_resp_remote_set_search_mode_t;
 
 // Command response structure for COCO_STD_CMD_REMOTE_ADD_APPLIANCE
@@ -156,6 +159,7 @@ typedef struct {
   uint8_t buttonId;
 } coco_std_cmd_remote_delete_button_t;
 
+// Possible values of remote attribute
 typedef enum {
   COCO_STD_ATTR_REMOTE_MIN = -1,
   COCO_STD_ATTR_REMOTE_SUPP_PROG_MODES_ARR,   // COCO_STD_DATA_TYPE_UINT8_ARR

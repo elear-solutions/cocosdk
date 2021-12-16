@@ -37,12 +37,14 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of vibration command
 typedef enum {
   COCO_STD_CMD_VIBRATION_MIN = -1,
   COCO_STD_CMD_VIBRATION_MAX,
   COCO_STD_CMD_VIBRATION_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_vibration_t;
 
+// Possible values of vibration attribute
 typedef enum {
   COCO_STD_ATTR_VIBRATION_MIN = -1,
   COCO_STD_ATTR_MOVEMENT_DETECTED_FLAG,   // COCO_STD_DATA_TYPE_BOOLEAN

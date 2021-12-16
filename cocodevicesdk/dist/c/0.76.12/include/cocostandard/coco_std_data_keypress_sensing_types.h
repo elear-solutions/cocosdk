@@ -37,6 +37,7 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of keypress command
 typedef enum {
   COCO_STD_CMD_KEYPRESS_MIN = -1,
   COCO_STD_CMD_KEYPRESS_SET_COMBO_NAME,
@@ -44,6 +45,7 @@ typedef enum {
   COCO_STD_CMD_KEYPRESS_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_keypress_t;
 
+// Possible values of keypress attribute
 typedef enum {
   COCO_STD_ATTR_KEYPRESS_MIN = -1,
   COCO_STD_ATTR_KEYPRESS_SCENE_ID,            // This attribute is deprecated COCO_STD_DATA_TYPE_UINT16
@@ -61,6 +63,7 @@ typedef enum {
   COCO_STD_ATTR_KEYPRESS_UBOUND = 0x7FFFFFFF
 } coco_std_attr_keypress_t;
 
+// Possible values of keypress scene
 typedef enum {
   COCO_STD_KEYPRESS_SCENE_MIN = -1,
   COCO_STD_KEYPRESS_SCENE_SINGLE,     // key pressed 1 time
@@ -74,6 +77,7 @@ typedef enum {
   COCO_STD_KEYPRESS_SCENE_UBOUND = 0x7FFFFFFF
 } coco_std_keypress_scene_t;
 
+// Structure of set keypress combo name command
 typedef struct {
   int16_t comboId;
   char *comboName;

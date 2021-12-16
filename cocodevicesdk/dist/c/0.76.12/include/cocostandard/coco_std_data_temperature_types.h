@@ -40,12 +40,14 @@
  /*************************************************************************************
   *                          GLOBAL TYPEDEFS                                          *
   *************************************************************************************/
+// Possible values of temperature command
 typedef enum {
   COCO_STD_CMD_TEMPERATURE_MIN = -1,
   COCO_STD_CMD_TEMPERATURE_MAX,
   COCO_STD_CMD_TEMPERATURE_UBOUND = 0x7FFFFFFF
 } coco_std_cmd_temperature_t;
 
+// Possible values of temperature attribute
 typedef enum {
   COCO_STD_ATTR_TEMPERATURE_MIN = -1,
   COCO_STD_ATTR_CURRENT_TEMP_CELSIUS,  // COCO_STD_DATA_TYPE_DOUBLE
