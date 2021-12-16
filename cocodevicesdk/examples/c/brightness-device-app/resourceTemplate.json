@@ -1,0 +1,123 @@
+{
+  "resourceArr":[
+    {
+      "resourceName":"Smart Bulb",
+      "manufacturer":"Machnation",
+      "model":"1-00",
+      "firmwareVersion":"0.0.1",
+      "powerSource":5,
+      "receiverType":0,
+      "explorationStatus":0,
+      "resourceEui":"zigbee/0015BC0036000397/26",
+      "capabilityArr":[
+        {
+          "capabilityName":"LEVEL",
+          "stdCmdArr":[
+            1
+          ],
+          "resourceEui":"zigbee/0015BC0036000397/26",
+          "capabilityId":1,
+          "attributeArr":[
+            {
+              "capabilityName":"LEVEL",
+              "attribName":"COCO_STD_ATTR_LEVEL_PCT",
+              "dataType":4,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":100,
+              "defaultValue":0,
+              "currentValue":40,
+              "reportableChange":1,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":0,
+              "capabilityId":1
+            }
+          ]
+        },
+
+        {
+          "capabilityName":"NETWORK CONFIG",
+          "stdCmdArr":[
+          ],
+          "resourceEui":"zigbee/0015BC0036000397/26",
+          "capabilityId":17,
+          "attributeArr":[
+            {
+              "capabilityName":"NETWORK CONFIG",
+              "attribName":"RSSI",
+              "dataType":4,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":4,
+              "defaultValue":4,
+              "currentValue":4,
+              "reportableChange":1,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":0,
+              "capabilityId":17
+            }
+          ]
+        },
+
+        {
+          "capabilityName":"ENERGING METERING",
+          "stdCmdArr":[
+          ],
+          "resourceEui":"zigbee/0015BC0036000397/26",
+          "capabilityId":4,
+          "attributeArr":[
+            {
+              "capabilityName":"ENERGING METERING",
+              "attribName":"DEMANDWATT",
+              "dataType":22,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":10000.0,
+              "defaultValue":50.00,
+              "currentValue":50.00,
+              "reportableChange":1.00,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":1,
+              "capabilityId":4
+            },
+
+            {
+              "capabilityName":"ENERGING METERING",
+              "attribName":"CONSUPTIONkWPH",
+              "dataType":22,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":10000.00,
+              "defaultValue":50.00,
+              "currentValue":50.00,
+              "reportableChange":1.00,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":0,
+              "capabilityId":4
+            }
+          ]
+        },
+      ]
+    }
+  ]
+}
