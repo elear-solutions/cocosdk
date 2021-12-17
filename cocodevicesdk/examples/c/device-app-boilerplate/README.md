@@ -3,7 +3,7 @@
 It is a CLI application to act as boilerplate for building a device app using COCO Device SDK. It demonstrates the following:
 - Onboarding the device onto the COCO Network
 - Adding an illumination sensor as a resource to the device
-- Publishing attribute updates for the illumination sensor
+- Publishing attribute updates for the illumination sensor for every 2 Sec
 
 ## Build on host machine
 ```
@@ -24,14 +24,28 @@ $ conan build . -bf=<path to build folder>
 The built binary can be found inside <path to build folder>/bin
 ```
 
+## Downloading device license file from Manage the Buzz portal
+1. Login to https://manage.getcoco.buzz/home using the verified credential
+2. From the **Developer Dashboard** choose the **Devices** tile
+3. From **List of Products** page click on **Product** button for adding the new product (If the product is already created, go tp step 6)
+4. In the **Create Product** page fill the product information such as Product Name, Make, Model, Description, Setup Instructions and select **TYPE OF PRODUCT** as **Self Managed** then click on **SUBMIT**
+5. Once the above process is successfully completed page will be redirected to **List of Products** page and newly added product can be found from **List of Products**
+6. From **List of Products** page click on the product name
+7. From **Product Details** page click on **Device Licenses**
+8. Enter the number of Licenses as 1 for downloading one device liceses and click on **GENERATE**
+9. Download the license file
+
 ## Running the executable
 ```
 To run the built executable:
-$ ./<path to build folder>/bin/deviceapp -d <current-working-directory> -c <config-file-path>
+$ ./<path to build folder>/bin/deviceapp -d <current-working-directory> -c <license-file-path>
 
 <current-working-directory> is the directory path where the application will store its data
-<onfig-file-path> is the path to the device license file downloaded from Manage the Buzz portal
+<license-file-path> is the path to the device license file downloaded from Manage the Buzz portal
 ```
+## Adding the deviceApp into the cocoNet
+- Run the deviceApp executable by following the commands from ``Running the executable ``
+- After the successful initialisation of deviceApp send the add device request from the client application
 
 License
 ==========
