@@ -1,3 +1,28 @@
+/*===================================================================================*/
+/*************************************************************************************/
+/**
+ * @file      main.c
+ * @brief     Main function for client app
+ * @details   Calls two functions for unit testing the config components.
+ * @see
+ * @author    Utkarsha Meshram, utkarshameshram@elear.solutions
+ * @test
+ * @copyright Copyright (c) 2021 Elear Solutions Tech Private Limited. All rights
+ *            reserved.
+ * @license   To any person (the "Recipient") obtaining a copy of this software and
+ *            associated documentation files (the "Software"):\n
+ *            All information contained in or disclosed by this software is
+ *            confidential and proprietary information of Elear Solutions Tech
+ *            Private Limited and all rights therein are expressly reserved.
+ *            By accepting this material the recipient agrees that this material and
+ *            the information contained therein is held in confidence and in trust
+ *            and will NOT be used, copied, modified, merged, published, distributed,
+ *            sublicensed, reproduced in whole or in part, nor its contents revealed
+ *            in any manner to others without the express written permission of
+ *            Elear Solutions Tech Private Limited.
+ */
+/*************************************************************************************/
+/*===================================================================================*/
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,6 +34,36 @@
 #include "cocostandard/coco_std_data_level_types.h"
 #include "client_callback.h"
 
+/*************************************************************************************
+ *                          LOCAL MACROS                                             *
+ *************************************************************************************/
+
+/*************************************************************************************
+ *                          LOCAL TYPEDEFS                                           *
+ *************************************************************************************/
+
+/*************************************************************************************
+ *                          LOCAL PROTOTYPES                                         *
+ ************************************************************************************/
+
+/*************************************************************************************
+ *                          GLOBAL VARIABLES                                         *
+ *************************************************************************************/
+
+/*************************************************************************************
+ *                          LOCAL VARIABLES                                          *
+ *************************************************************************************/
+
+/*************************************************************************************
+ *                          PRIVATE FUNCTIONS                                        *
+ *************************************************************************************/
+/******************************************************************************
+Name        : utest_init
+Input(s)    : argc - argument count, char *argv[] - array of strings input of
+              command line
+Output(s)   : void
+Description : Initialize the application and libelearcommon for testing
+*******************************************************************************/
 static void client_init(void) {
   char appAccessList[200] = "{\"appCapabilities\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]}";
   char clientId[100] = "f0799bdea3aeadeb7429";
@@ -71,6 +126,12 @@ static void client_init(void) {
   }
 }
 
+/******************************************************************************
+Name        : main
+Input(s)    : void
+Output(s)   : int: returns number of test cases that are failed
+Description : Performing various client init functionality.
+*******************************************************************************/
 int main(int argc, char *argv[]) {
   int choice = 0;
   char networkIdArr[100];
