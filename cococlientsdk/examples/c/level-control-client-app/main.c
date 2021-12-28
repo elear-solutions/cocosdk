@@ -83,7 +83,7 @@ static void client_init(void) {
     NULL,
     NULL,
     NULL,
-    NULL,
+    cocosdk_res_cmd_status_cb,
     cocosdk_nw_list_cb,
     NULL,
     NULL,
@@ -148,13 +148,15 @@ int main(int argc, char *argv[]) {
     "\"refresh_token\": \"%s\" }";
 
   char networkId[100] = { 0 };
-  char resourceEui[100] = { 0 };
-  int deviceNodeId, variable;
+  char resourceEui[100] = "zigbee/0015BC0036000397/26";
+  int deviceNodeId, variable = 5000;
   coco_std_resource_cmd_t onOffCmd = { 0 };
   coco_std_cmd_set_level_t levelAttr = { 0 };
   int count = 0;
 
   client_init();
+
+  printf("******************************************************\n");
 
   do {
     printf("App: Select one of the below:\n");
@@ -240,18 +242,6 @@ int main(int argc, char *argv[]) {
 
         printf("App: Enter deviceNodeId: ");
         if (-1 == scanf("%d", &deviceNodeId)) {
-          printf("App: Failed to read from user\n");
-          return EXIT_SUCCESS;
-        }
-
-        printf("App: Enter resourceEui: ");
-        if (-1 == scanf("%s", resourceEui)) {
-          printf("App: Failed to read from user\n");
-          return EXIT_SUCCESS;
-        }
-
-        printf("App: Enter timeOut: ");
-        if (-1 == scanf("%d", &variable)) {
           printf("App: Failed to read from user\n");
           return EXIT_SUCCESS;
         }

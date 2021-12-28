@@ -97,6 +97,15 @@ void cocosdk_node_conn_status(char *networkId, uint32_t nodeId,
                               int32_t nodeType, int32_t isOnline,
                               void *coconetContext);
 
+/********************************************//**
+ * @brief
+ * @details
+ * @param
+ * @return
+ ***********************************************/
+ void cocosdk_res_cmd_status_cb(coco_std_resource_cmd_status_t *resourceCmdStatus,
+                               void *cmdContext, void *networkContext);
+
 /*************************************************************************************
  *                          EXTERNAL FUNCTIONS                                       *
  *************************************************************************************/
