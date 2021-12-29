@@ -1,0 +1,75 @@
+{
+  "resourceArr":[
+    {
+      "resourceName":"Smart Bulb",
+      "manufacturer":"Machnation",
+      "model":"1-00",
+      "firmwareVersion":"0.0.1",
+      "powerSource":5,
+      "receiverType":0,
+      "explorationStatus":0,
+      "resourceEui":"zigbee/0015BC0036000397/26",
+      "capabilityArr":[
+        {
+          "capabilityName":"ON OFF",
+          "stdCmdArr":[
+            0
+          ],
+          "resourceEui":"zigbee/0015BC0036000397/26",
+          "capabilityId":0,
+          "attributeArr":[
+            {
+              "capabilityName":"ON OFF",
+              "attribName":"COCO_STD_ATTR_ON_FLAG",
+              "dataType":0,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":1,
+              "defaultValue":0,
+              "currentValue":0,
+              "reportableChange":1,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":0,
+              "capabilityId":0
+            }
+          ]
+        },
+
+        {
+          "capabilityName":"TEMPERATURE",
+          "stdCmdArr":[
+          	0
+          ],
+          "resourceEui":"zigbee/0015BC0036000397/26",
+          "capabilityId":10,
+          "attributeArr":[
+            {
+              "capabilityName":"TEMPERATURE",
+              "attribName":"COCO_STD_ATTR_CURRENT_TEMP_CELSIUS",
+              "dataType":22,
+              "dataArrayLen":0,
+              "minValue":0,
+              "maxValue":100,
+              "defaultValue":40,
+              "currentValue":40,
+              "reportableChange":1,
+              "minReportingIntervalMs":0,
+              "maxReportingIntervalMs":0,
+              "isRealTimeUpdate":1,
+              "persist":1,
+              "lastUpdateTimestamp":"2021-06-21 12:14:53",
+              "resourceEui":"zigbee/0015BC0036000397/26",
+              "attributeId":0,
+              "capabilityId":10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
