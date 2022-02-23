@@ -29,10 +29,18 @@ cmake_minimum_required(VERSION 2.6)
 project(deviceapp) 
 
 if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  # todo: check if this is not needed
   set(CONAN_DISABLE_CHECK_COMPILER true)
+
   include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   conan_basic_setup()
-endif()
+  file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/obj)
+  execute_process (
+    COMMAND ar x ${CONAN_LIB_DIRS_COCODEVICESDK}/libcocodevicesdk_static.a
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/obj
+   )
+endif ()
+file (GLOB OBJS ${CMAKE_BINARY_DIR}/obj/*.o)
 
 # Define link_directory to be relative path
 cmake_policy(SET CMP0015 NEW)
@@ -47,13 +55,12 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic-errors -Wall -std=c11 -D_GNU_SOURC
 file(GLOB SRCS *.c *.h)
 
 # Add final executable for this folder along with library dependencies
-add_executable(deviceapp ${SRCS})
+add_executable(deviceapp ${SRCS} ${OBJS})
 
 # Specify the libraries to be linked dynamically
 if(${APPLE})
-  target_link_libraries(deviceapp libcocodevicesdk_static.a)
-else()
-  target_link_libraries(deviceapp cocodevicesdk)
+  target_link_libraries(cococlientsdk "-framework CoreFoundation")
+  target_link_libraries(cococlientsdk "-framework SystemConfiguration")
 endif()
 
 target_link_libraries(deviceapp dl)
