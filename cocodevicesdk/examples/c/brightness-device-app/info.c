@@ -88,7 +88,7 @@ coco_device_init_params_t deviceInitParams = {
   0,
   "../../cwd/config.json",
   "../../cwd/download",
-  0,
+  "/tmp",
   "1.0.0",
   protocolArr,
   1,
