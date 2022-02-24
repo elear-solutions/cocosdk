@@ -59,8 +59,8 @@ add_executable(deviceapp ${SRCS} ${OBJS})
 
 # Specify the libraries to be linked dynamically
 if(${APPLE})
-  target_link_libraries(cococlientsdk "-framework CoreFoundation")
-  target_link_libraries(cococlientsdk "-framework SystemConfiguration")
+  target_link_libraries(deviceapp "-framework CoreFoundation")
+  target_link_libraries(deviceapp "-framework SystemConfiguration")
 endif()
 
 target_link_libraries(deviceapp dl)
