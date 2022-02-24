@@ -18,8 +18,10 @@ int main(int argc, char *argv[]) {
       sleep(3);
     }
     printf("App: Device authentication success\n");
+  } else if (1 == initRetVal) {
+    printf("device already provisioned, continuing\n");
   } else {
-    printf("cannot initialize sdk, exiting\n");
+    printf("cannot initialize sdk, exiting, check logs for cause\n");
     exit(1);
   }
 
