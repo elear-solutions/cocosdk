@@ -49,13 +49,9 @@ class DeviceAppConan(ConanFile):
         if self.user and self.channel:
             default_user = self.user
             default_channel = self.channel
-        self.requires("cocodevicesdk/[0.76.12]@%s/%s" % (default_user, default_channel))
+        self.requires("cocodevicesdk/0.82.0@%s/%s" % (default_user, default_channel))
     
     def imports(self):
-        if not tools.is_apple_os(self.settings.os):
-            self.copy("libcatta.so", dst="lib", src="lib")
-            self.copy("libcatta.so.0", dst="lib", src="lib")
-            self.copy("libcocodevicesdk.so", dst="lib", src="lib")
         self.copy("*", dst="include/cocodevicesdk", src="include/cocodevicesdk")
 
     def build(self):

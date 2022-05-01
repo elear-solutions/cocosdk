@@ -14,9 +14,15 @@ int main(int argc, char *argv[]) {
 
   if (0 == (retVal = coco_device_init(&deviceInitParams))) {
     while (-1 == (coco_device_init_auth())) {
+      printf("failed to init auth, will retry in some time");
       sleep(3);
     }
     printf("App: Device authentication success\n");
+  } else if (1 == retVal) {
+    printf("device already provisioned, continuing\n");
+  } else {
+    printf("cannot initialize sdk, exiting, check logs for cause\n");
+    exit(1);
   }
 
   coco_device_resource_attribute_update(&rssiAttr, NULL);
